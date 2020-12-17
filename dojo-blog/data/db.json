@@ -1,0 +1,16 @@
+{
+  "posts": [
+    {
+      "id": 1,
+      "title": "welcome to the end",
+      "body": "Ni hao, ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus quidem molestiae praesentium dolore aperiam et vel accusamus modi excepturi magni sapiente quis, odio earum deleniti quibusdam dignissimos neque! Facilis, officiis.",
+      "tags": ["webdev", "coding", "news"]
+    },
+    {
+      "id": 2,
+      "title": "top 5 CSS tips",
+      "body": "Voluptatibus quidem molestiae praesentium dolore aperiam et vel accusamus modi excepturi magni sapiente quis, odio earum deleniti quibusdam dignissimos neque! Facilis, officiis.",
+      "tags": ["webdev", "coding", "news"]
+    }
+  ]
+}

@@ -19,7 +19,7 @@ export default defineComponent({
     // IMPORTANT: computed() is cached and it does not get re-executed
     // unless there are changes to post.body
     const snippetComputed = computed(() => {
-      return props.post.body.substring(0, 10) + " .........";
+      return props.post.body.substring(0, 50) + " ...";
     });
 
     return { snippetComputed };
