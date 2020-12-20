@@ -8,7 +8,7 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, onUnmounted, onUpdated } from "vue";
-import SinglePost from "../components/SinglePost.vue";
+import SinglePost from "@/components/SinglePost.vue";
 
 export default defineComponent({
   props: ["posts"],

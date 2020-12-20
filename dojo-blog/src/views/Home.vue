@@ -10,13 +10,16 @@
 </template>
 
 <script lang="ts">
-import PostList from "../components/PostList.vue";
 import { defineComponent, ref } from "vue";
+import PostList from "@/components/PostList.vue";
+import getPosts from "@/composables/getPosts";
 
 export default defineComponent({
   name: "Home",
   components: { PostList },
   setup() {
+    // Let's destructure our getPosts()
+    const { posts, error, load } = getPosts();
     // Run our load() to fetch data
     load();
 

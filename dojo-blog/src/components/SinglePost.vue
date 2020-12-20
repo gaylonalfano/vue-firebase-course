@@ -1,9 +1,12 @@
 <template>
   <div class="single-post">
-    <h3>Post {{ post.id }}: {{ post.title }}</h3>
+    <router-link :to="{ name: 'PostDetails', params: { id: post.id } }">
+      <h3>{{ post.title }}</h3>
+    </router-link>
     <!-- <p>{{ post.body.substring(0, 10) + "..." }}</p> -->
     <!-- <p>{{ postSnippet }}</p> -->
     <p>{{ snippetComputed }}</p>
+    <span v-for="tag in post.tags" :key="tag"> #{{ tag }} </span>
   </div>
 </template>
 
