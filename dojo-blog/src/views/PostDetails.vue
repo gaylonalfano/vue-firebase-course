@@ -4,14 +4,19 @@
     <h3>{{ post.title }}</h3>
     <p class="pre">{{ post.body }}</p>
   </div>
+  <div v-else>
+    <Spinner />
+  </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import Spinner from "@/components/Spinner.vue";
 import getPost from "@/composables/getPost";
 
 export default defineComponent({
   name: "PostDetails",
+  components: { Spinner },
   // NOTE: With props: true, props will have "route.params" auto-registered (props: ["route.params"])
   // NOTE: You can access directly using $route.params.id or register 'id' using props: ['id']
   props: ["id"],

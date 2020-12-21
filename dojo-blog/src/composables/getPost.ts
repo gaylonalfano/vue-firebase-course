@@ -8,6 +8,11 @@ function getPost(postId: string) {
 
   const request = async (): Promise<void> => {
     try {
+      // Simulate a delay.
+      await new Promise(resolve => {
+        setTimeout(resolve, 2000);
+      });
+
       // Use await so it won't run the next line below. It waits.
       const response = await fetch(`http://localhost:3000/posts/${postId}`);
       // console.log(response); // Response
@@ -20,7 +25,8 @@ function getPost(postId: string) {
       }
 
       // Let's parse the Response JSON into JS and store in post.value
-      post.value = await response.json();
+      const data = await response.json();
+      post.value = data;
     } catch (err) {
       // We can do something now with the caught Error
       // We can even update our error ref()'s value to Error.message
@@ -31,6 +37,8 @@ function getPost(postId: string) {
   };
 
   // NOTE When I invoke here, it works but get TS error in PostDetails.vue
+  // NOTE It's standard practice to just return the function reference
+  // instead of invoking inside. More flexibility.
   // request();
 
   return { post, error, request };

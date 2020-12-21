@@ -9,20 +9,26 @@ function getPosts() {
 
   // Now let's fetch the data from json-server
   // NOTE Could use request:response:data pattern vs. load:data:data.json()
-  const load = async (): Promise<void> => {
+  const request = async (): Promise<void> => {
     try {
+      // Simulate a delay.
+      await new Promise(resolve => {
+        setTimeout(resolve, 2000);
+      });
+
       // Use await so it won't run the next line below. It waits.
-      const data = await fetch("http://localhost:3000/posts");
-      // console.log(data); // Response
+      const response = await fetch("http://localhost:3000/posts");
+      // console.log(response); // Response
       // Check that Response is NOT okay via 'ok' property
-      if (!data.ok) {
+      if (!response.ok) {
         // Response isn't ok so throw an error
         // NOTE This new Error() Object will be passed into catch(err)
-        throw Error("No data available at API."); // Stored in Error.message
+        throw new Error("No data available at API."); // Stored in Error.message
       }
 
       // Let's parse the Response JSON into JS and store in posts.value
-      posts.value = await data.json();
+      const data = await response.json();
+      posts.value = data;
     } catch (err) {
       // We can do something now with the caught Error
       // We can even update our error ref()'s value to Error.message
@@ -32,10 +38,10 @@ function getPosts() {
     }
     // Don't load directly in here! Instead invoke in component(s)
     // TODO ? Why?
-    // load();
+    // request();
   };
   // Let's package it all up and return in an Object
-  return { posts, error, load };
+  return { posts, error, request };
 }
 
 export default getPosts;
