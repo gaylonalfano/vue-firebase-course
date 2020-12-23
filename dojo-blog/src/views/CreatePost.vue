@@ -13,13 +13,14 @@
         @keydown.enter.prevent="addTagHandler"
       />
       <div class="pill" v-for="tag in tags" :key="tag">#{{ tag }}</div>
-      <button>Add Post</button>
+      <button @click="createPost">Add Post</button>
     </form>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
+// import Post from "@/interfaces/post";
 export default defineComponent({
   name: "CreatePost",
   setup() {
@@ -27,6 +28,9 @@ export default defineComponent({
     const body = ref<string>("");
     const tag = ref<string>("");
     const tags = ref<string[]>([]);
+    // Q: Can I use extend Post type to add the 'id' field on top?
+    // Q: Add the newPost object inside this funtion or setup()?
+    // A: Should put inside createPost() function!
 
     function addTagHandler(e: KeyboardEvent): void {
       // console.group("addTagHandler Executed");
@@ -43,7 +47,28 @@ export default defineComponent({
       // console.log(tags.value); // works
     }
 
-    return { title, body, tag, tags, addTagHandler };
+    async function createPost() {
+      const newPost = {
+        id: Math.floor(Math.random() * Math.floor(100)),
+        title: title.value,
+        body: body.value,
+        tags: tags.value,
+      };
+      const url: RequestInfo = "http://localhost:3000/posts";
+      const opts: RequestInit = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json; charset=UTF-8",
+        },
+        body: JSON.stringify(newPost),
+      };
+      const response = await fetch(url, opts);
+      const result = await response.json();
+
+      return result;
+    }
+
+    return { title, body, tag, tags, addTagHandler, createPost };
   },
 });
 </script>
