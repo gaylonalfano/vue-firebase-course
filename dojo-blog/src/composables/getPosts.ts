@@ -5,7 +5,9 @@ function getPosts() {
   const posts = ref<Post[]>([]);
   // Create error variable in case of error with HTTP request
   // We can return this to make it availabe in the template to display
-  const error = ref<string | null>(null);
+  // Q: Use null or undefined?
+  // A: I believe both work. https://youtu.be/aJdi-uEKYAc?t=1070
+  const error = ref<string | undefined>(undefined);
 
   // Now let's fetch the data from json-server
   // NOTE Could use request:response:data pattern vs. load:data:data.json()
@@ -41,6 +43,7 @@ function getPosts() {
     // request();
   };
   // Let's package it all up and return in an Object
+  // NOTE https://youtu.be/hOtYtLaM1fU?t=298 shows type casting of this object
   return { posts, error, request };
 }
 

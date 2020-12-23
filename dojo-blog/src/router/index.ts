@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import Home from "@/views/Home.vue";
 import PostDetails from "@/views/PostDetails.vue";
+import CreatePost from "@/views/CreatePost.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -13,6 +14,11 @@ const routes: Array<RouteRecordRaw> = [
     name: "PostDetails",
     component: PostDetails,
     props: true
+  },
+  {
+    path: "/create",
+    name: "CreatePost",
+    component: CreatePost
   }
 ];
 

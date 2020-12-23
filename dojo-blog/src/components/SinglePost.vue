@@ -18,7 +18,7 @@ export default defineComponent({
   // we can use setup(props) to then access props.post.body
   setup(props) {
     // const postSnippet = props.post.body.substring(0, 10) + " ...";
-    // Need to use computed() if props are already reactive w/ ref()?
+    // Need to use computed() if props are already reactive w/ ref()? YES!
     // IMPORTANT: computed() is cached and it does not get re-executed
     // unless there are changes to post.body
     const snippetComputed = computed(() => {

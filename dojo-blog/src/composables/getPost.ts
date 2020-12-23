@@ -2,9 +2,11 @@ import { ref } from "vue";
 import Post from "@/interfaces/post";
 
 function getPost(postId: string) {
-  // Q: Do I cast to null or undefined for post? A: null
-  const post = ref<Post | null>(null);
-  const error = ref<string | null>(null);
+  // Q: Do I cast to null or undefined for post?
+  // A: I think both null and undefined work.
+  // https://youtu.be/aJdi-uEKYAc?t=1070
+  const post = ref<Post | undefined>(undefined);
+  const error = ref<string | undefined>(undefined);
 
   const request = async (): Promise<void> => {
     try {
