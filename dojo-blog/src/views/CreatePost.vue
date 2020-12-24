@@ -1,6 +1,6 @@
 <template>
   <div class="create-post">
-    <form>
+    <form @submit.prevent="createPost">
       <label>Title:</label>
       <input v-model="title" type="text" name="title" required />
       <label>Content:</label>
@@ -13,14 +13,14 @@
         @keydown.enter.prevent="addTagHandler"
       />
       <div class="pill" v-for="tag in tags" :key="tag">#{{ tag }}</div>
-      <button @click="createPost">Add Post</button>
+      <button>Add Post</button>
     </form>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-// import Post from "@/interfaces/post";
+import Post from "@/interfaces/post";
 export default defineComponent({
   name: "CreatePost",
   setup() {
@@ -47,9 +47,26 @@ export default defineComponent({
       // console.log(tags.value); // works
     }
 
+    // SEAN'S SOLUTION:
+    // async function handleSubmit() {
+    //   const post = {
+    //     title: title.value,
+    //     body: body.value,
+    //     tags: tags.value,
+    //   };
+
+    //   // He just makes the fetch directly and doesn't return anything!
+    //   await fetch("http://localhost:3000/posts", {
+    //     method: "POST",
+    //     headers: { "Content-Type": "application/json" },
+    //     body: JSON.stringify(post),
+    //   });
+    // }
+
+    // MY ATTEMPT:
     async function createPost() {
-      const newPost = {
-        id: Math.floor(Math.random() * Math.floor(100)),
+      const newPost: Post = {
+        // id: Math.floor(Math.random() * Math.floor(100)), // json-server generates id for us!
         title: title.value,
         body: body.value,
         tags: tags.value,
@@ -58,11 +75,13 @@ export default defineComponent({
       const opts: RequestInit = {
         method: "POST",
         headers: {
-          "Content-Type": "application/json; charset=UTF-8",
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(newPost),
       };
       const response = await fetch(url, opts);
+      // NOTE I don't think I need to do these extra steps and return result
+      // unless I plan on doing something with it in the template, etc.
       const result = await response.json();
 
       return result;

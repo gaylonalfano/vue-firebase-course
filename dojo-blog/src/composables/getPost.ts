@@ -11,9 +11,9 @@ function getPost(postId: string) {
   const request = async (): Promise<void> => {
     try {
       // Simulate a delay.
-      await new Promise(resolve => {
-        setTimeout(resolve, 2000);
-      });
+      // await new Promise(resolve => {
+      //   setTimeout(resolve, 2000);
+      // });
 
       // Use await so it won't run the next line below. It waits.
       const response = await fetch(`http://localhost:3000/posts/${postId}`);
