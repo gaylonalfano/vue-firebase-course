@@ -20,7 +20,9 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
+import { useRouter } from "vue-router";
 import Post from "@/interfaces/post";
+
 export default defineComponent({
   name: "CreatePost",
   setup() {
@@ -31,6 +33,9 @@ export default defineComponent({
     // Q: Can I use extend Post type to add the 'id' field on top?
     // Q: Add the newPost object inside this funtion or setup()?
     // A: Should put inside createPost() function!
+
+    const router = useRouter();
+    // console.log(router);
 
     function addTagHandler(e: KeyboardEvent): void {
       // console.group("addTagHandler Executed");
@@ -82,9 +87,17 @@ export default defineComponent({
       const response = await fetch(url, opts);
       // NOTE I don't think I need to do these extra steps and return result
       // unless I plan on doing something with it in the template, etc.
-      const result = await response.json();
+      // const result = await response.json();
+      // return result;
 
-      return result;
+      // Let's reset the form fields
+      // NOTE Not necessary after we added the redirect
+      title.value = "";
+      body.value = "";
+      tags.value = [];
+
+      // Redirect back to Home page
+      router.push({ name: "Home" });
     }
 
     return { title, body, tag, tags, addTagHandler, createPost };
