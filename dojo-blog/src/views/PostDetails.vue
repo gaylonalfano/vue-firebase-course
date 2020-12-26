@@ -11,6 +11,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { useRoute } from "vue-router";
 import Spinner from "@/components/Spinner.vue";
 import getPost from "@/composables/getPost";
 
@@ -23,11 +24,24 @@ export default defineComponent({
 
   // Now I can access these props via setup(props) to access
   setup(props) {
-    const { post, error, request } = getPost(props.id);
+    // WITHOUT using useRoute(): Errors
+    //console.log(route.params); // Error
+    //console.log($route.params.id); // Error
+    //console.log(props.$route.params); // Error
+    // WITH using useRoute(): Works
+    // Explore details of current route using useRoute()
+    const route = useRoute();
+    console.log(route);
+
+    // FIXME With TS, I have to type cast 'as string' otherwise breaks.
+    const { post, error, request } = getPost(route.params.id as string); // Or can use props.id too
+    //const { post, error, request } = getPost(props.id); // Or can use route.params.id as string
     // console.log(post.value); // null for both approaches
     // NOTE Do I have to return 'request()' and invoke here?
     // I can get both approaches to work...
     request();
+    // console.log(props.id);
+    // console.log(route.params.id);
 
     return { post, error };
   },

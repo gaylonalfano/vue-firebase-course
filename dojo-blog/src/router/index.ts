@@ -2,6 +2,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import Home from "@/views/Home.vue";
 import PostDetails from "@/views/PostDetails.vue";
 import CreatePost from "@/views/CreatePost.vue";
+import Tag from "@/views/Tag.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -19,6 +20,12 @@ const routes: Array<RouteRecordRaw> = [
     path: "/create",
     name: "CreatePost",
     component: CreatePost
+  },
+  {
+    path: "/tags/:tag",
+    name: "Tag",
+    component: Tag,
+    props: true
   }
 ];
 

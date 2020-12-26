@@ -17,9 +17,9 @@ export default defineComponent({
   setup(props) {
     // console.log(props); // Proxy {posts: Proxy}
     // console.log(props.posts); // Proxy {0: {...}, 1: {...}}
-    onMounted(() => console.log("component MOUNTED"));
-    onUnmounted(() => console.log("component UNMOUNTED"));
-    onUpdated(() => console.log("component UPDATED"));
+    onMounted(() => console.log("PostList component MOUNTED"));
+    onUnmounted(() => console.log("PostList component UNMOUNTED"));
+    onUpdated(() => console.log("PostList component UPDATED"));
   },
 });
 </script>
