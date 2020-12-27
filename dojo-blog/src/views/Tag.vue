@@ -4,6 +4,7 @@
     <div v-if="error">{{ error }}</div>
     <div v-if="posts.length">
       <PostList :posts="postsValueComputed" />
+      <TagCloud :posts="posts" />
     </div>
     <div v-else>
       <Spinner />
@@ -16,12 +17,13 @@ import { defineComponent, computed } from "vue";
 import { useRoute } from "vue-router";
 import PostList from "@/components/PostList.vue";
 import Spinner from "@/components/Spinner.vue";
+import TagCloud from "@/components/TagCloud.vue";
 import getPosts from "@/composables/getPosts";
 
 export default defineComponent({
   name: "Tag",
   props: ["tag"],
-  components: { PostList, Spinner },
+  components: { PostList, Spinner, TagCloud },
   setup(props) {
     // Let's get our posts via GET request
     const { posts, error, request } = getPosts();
