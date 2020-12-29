@@ -22,6 +22,7 @@
 import { defineComponent, ref } from "vue";
 import { useRouter } from "vue-router";
 import Post from "@/interfaces/post";
+import { projectFirestore } from "@/firebase/config";
 
 export default defineComponent({
   name: "CreatePost",
@@ -39,7 +40,7 @@ export default defineComponent({
 
     function addTagHandler(e: KeyboardEvent): void {
       // console.group("addTagHandler Executed");
-      // console.log(e.type);
+      console.log(e.type);
       // Check that tag isn't already in tags
       // If not, add to tags array
       if (!tags.value.includes(tag.value)) {
@@ -68,28 +69,37 @@ export default defineComponent({
     //   });
     // }
 
-    // MY ATTEMPT:
+    // // MY ATTEMPT: Using json-server
+    // async function createPost() {
+    //   const newPost: Post = {
+    //     // id: Math.floor(Math.random() * Math.floor(100)), // json-server generates id for us!
+    //     title: title.value,
+    //     body: body.value,
+    //     tags: tags.value,
+    //   };
+    //   const url: RequestInfo = "http://localhost:3000/posts";
+    //   const opts: RequestInit = {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify(newPost),
+    //   };
+    //   const response = await fetch(url, opts);
+    //   // NOTE I don't think I need to do these extra steps and return result
+    //   // unless I plan on doing something with it in the template, etc.
+    //   // const result = await response.json();
+    //   // return result;
+
+    // MY ATTEMPT: Firestore
     async function createPost() {
-      const newPost: Post = {
-        // id: Math.floor(Math.random() * Math.floor(100)), // json-server generates id for us!
+      const post: Post = {
         title: title.value,
         body: body.value,
         tags: tags.value,
       };
-      const url: RequestInfo = "http://localhost:3000/posts";
-      const opts: RequestInit = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newPost),
-      };
-      const response = await fetch(url, opts);
-      // NOTE I don't think I need to do these extra steps and return result
-      // unless I plan on doing something with it in the template, etc.
-      // const result = await response.json();
-      // return result;
-
+      const response = await projectFirestore.collection("posts").add(post);
+      console.log(response);
       // Let's reset the form fields
       // NOTE Not necessary after we added the redirect
       title.value = "";
@@ -118,7 +128,7 @@ textarea {
   width: 100%;
   box-sizing: border-box;
   padding: 10px;
-  border: 1px solid #eee;
+  border: 2px solid #dfdfdf;
 }
 textarea {
   height: 160px;

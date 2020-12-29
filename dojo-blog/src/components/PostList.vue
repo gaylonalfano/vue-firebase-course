@@ -16,7 +16,7 @@ export default defineComponent({
   // OPTIONAL: Pass as arg to setup(props) to access within setup
   setup(props) {
     // console.log(props); // Proxy {posts: Proxy}
-    // console.log(props.posts); // Proxy {0: {...}, 1: {...}}
+    console.log(props.posts); // Proxy {0: {...}, 1: {...}}
     onMounted(() => console.log("PostList component MOUNTED"));
     onUnmounted(() => console.log("PostList component UNMOUNTED"));
     onUpdated(() => console.log("PostList component UPDATED"));
