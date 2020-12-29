@@ -5,6 +5,7 @@ import "firebase/firestore";
 // import {
 //   FirebaseFirestore,
 //   QuerySnapshot,
+//   CollectionReference,
 //   DocumentData,
 //   DocumentReference
 // } from "@firebase/firestore-types";
@@ -32,8 +33,9 @@ const projectFirestore = firebase.firestore(firebaseApp); // Works???
 export {
   projectFirestore
   // FirebaseFirestore,
-  // QuerySnapshot,
-  // DocumentData,
+  // QuerySnapshot
+  // DocumentData
   // DocumentReference
+  // CollectionReference
 }; // default or not, still doesn't work...
 // export default projectFirestore; // No luck...
