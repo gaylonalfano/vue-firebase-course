@@ -1,5 +1,17 @@
 import { ref } from "vue";
 import Post from "@/interfaces/post";
+import { projectFirestore } from "@/firebase/config"; // ../firebase/config works too
+import {
+  CollectionReference,
+  // DocumentData,
+  // DocumentReference,
+  QuerySnapshot
+} from "@firebase/firestore-types";
+// import { projectFirestore } from "@/firebase/config"; // Works
+// import { projectFirestore } from "./../firebase/config";
+// import { projectFirestore } from "../firebase/config"; // Works
+// import * as projectFirestore from "./../firebase/config";
+// import * as projectFirestore from "../firebase/config";
 
 function getPosts() {
   const posts = ref<Post[]>([]);
@@ -13,24 +25,54 @@ function getPosts() {
   // NOTE Could use request:response:data pattern vs. load:data:data.json()
   const request = async (): Promise<void> => {
     try {
+      // ==== Using Firestore ====
+      // NOTE Here's a sample from Google collecting documents. The variable names I think hint at their Types.
+      // https://github.com/googleapis/nodejs-firestore/blob/master/samples/limit-to-last-query.js
+      const collectionReference: CollectionReference<Post> = projectFirestore.collection(
+        "posts"
+      );
+      const postsDocuments: QuerySnapshot<Post> = await collectionReference.get();
+      // const postsDocumentData: Post[] = postsDocuments.docs.map(doc =>
+      //   doc.data()
+      // );
+      // console.log(postsDocumentData); // WORKS!
+      // Okay, let's try to do loop over postsDocuments and update posts.value directly
+      // by returning a new Object per post using ...spread
+      posts.value = postsDocuments.docs.map(doc => {
+        return { ...doc.data(), id: doc.id };
+      }); // WORKS!
+
+      // // WORKS now with QuerySnapshot<Post> used for response!
+      // const response: QuerySnapshot<Post> = await projectFirestore
+      //   .collection("posts")
+      //   .get();
+      // console.log(response.docs); // .docs for the actual docs
+
+      // // // Loop over the docs, retrieve the data using .data() and update
+      // // // posts.value with these objects.
+      // posts.value = response.docs.map(doc => {
+      //   // Use ...spread to create a new Object
+      //   // console.log(doc.data());
+      //   return { ...doc.data(), id: doc.id };
+      // });
+
+      // ==== Using json-server ====
       // Simulate a delay.
       // await new Promise(resolve => {
       //   setTimeout(resolve, 2000);
       // });
-
       // Use await so it won't run the next line below. It waits.
-      const response = await fetch("http://localhost:3000/posts");
+      // const response = await fetch("http://localhost:3000/posts");
       // console.log(response); // Response
       // Check that Response is NOT okay via 'ok' property
-      if (!response.ok) {
-        // Response isn't ok so throw an error
-        // NOTE This new Error() Object will be passed into catch(err)
-        throw new Error("No data available at API."); // Stored in Error.message
-      }
-
+      // if (!response.ok) {
+      //   // Response isn't ok so throw an error
+      //   // NOTE This new Error() Object will be passed into catch(err)
+      //   throw new Error("No data available at API."); // Stored in Error.message
+      // }
       // Let's parse the Response JSON into JS and store in posts.value
-      const data = await response.json();
-      posts.value = data;
+      // const data = await response.json();
+      // posts.value = data;
     } catch (err) {
       // We can do something now with the caught Error
       // We can even update our error ref()'s value to Error.message

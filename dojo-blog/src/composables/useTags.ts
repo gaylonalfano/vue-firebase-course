@@ -15,6 +15,7 @@ function useTags(posts: Post[]) {
   // Update our tags Ref with tagSet values
   tags.value = [...tagSet]; // Or, Array.from(tagSet)
 
+  // Don't need to return tagSet. Only did for testing purposes.
   return { tagSet, tags };
 }
 
