@@ -1,30 +1,18 @@
 import { ref } from "vue";
-import Post from "@/interfaces/post";
 import { projectFirestore } from "@/firebase/config";
-import {
-  CollectionReference,
-  // DocumentData,
-  // DocumentReference,
-  // QuerySnapshot,
-  DocumentSnapshot
-} from "@firebase/firestore-types";
 
 function getPost(postId: string) {
   // Q: Do I cast to null or undefined for post?
   // A: I think both null and undefined work.
   // https://youtu.be/aJdi-uEKYAc?t=1070
-  const post = ref<Post | undefined>(undefined);
+  const post = ref<any | undefined>(undefined); // Can't leave empty or 'never'
   const error = ref<string | undefined>(undefined);
 
   const request = async (): Promise<void> => {
     try {
       // ==== Using Firestore ====
-      const collectionReference: CollectionReference<Post> = projectFirestore.collection(
-        "posts"
-      );
-      const postDocument: DocumentSnapshot<Post> = await collectionReference
-        .doc(postId)
-        .get();
+      const collectionReference = projectFirestore.collection("posts");
+      const postDocument = await collectionReference.doc(postId).get();
 
       // post.value = postDocument.data(); // Missing id value!
       if (!postDocument.exists) {

@@ -21,7 +21,6 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import { useRouter } from "vue-router";
-import Post from "@/interfaces/post";
 import { projectFirestore, timestamp } from "@/firebase/config";
 
 export default defineComponent({

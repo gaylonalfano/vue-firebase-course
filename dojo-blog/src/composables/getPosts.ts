@@ -1,13 +1,5 @@
-// @ts-nocheck
 import { ref } from "vue";
-import Post from "@/interfaces/post";
 import { projectFirestore } from "@/firebase/config"; // ../firebase/config works too
-import {
-  CollectionReference,
-  // DocumentData,
-  // DocumentReference,
-  QuerySnapshot
-} from "@firebase/firestore-types";
 // import { projectFirestore } from "@/firebase/config"; // Works
 // import { projectFirestore } from "./../firebase/config";
 // import { projectFirestore } from "../firebase/config"; // Works
@@ -15,7 +7,7 @@ import {
 // import * as projectFirestore from "../firebase/config";
 
 function getPosts() {
-  const posts = ref<Post[]>([]);
+  const posts = ref<Record<string, any>[]>([]); // Can't leave empty or 'never'
   // Create error variable in case of error with HTTP request
   // We can return this to make it availabe in the template to display
   // Q: Use null or undefined?
@@ -29,10 +21,8 @@ function getPosts() {
       // ==== Using Firestore ====
       // NOTE Here's a sample from Google collecting documents. The variable names I think hint at their Types.
       // https://github.com/googleapis/nodejs-firestore/blob/master/samples/limit-to-last-query.js
-      const collectionReference: CollectionReference<Post> = projectFirestore.collection(
-        "posts"
-      );
-      const postsDocuments: QuerySnapshot<Post> = await collectionReference.get();
+      const collectionReference = projectFirestore.collection("posts");
+      const postsDocuments = await collectionReference.get();
       // const postsDocumentData: Post[] = postsDocuments.docs.map(doc =>
       //   doc.data()
       // );
