@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { ref } from "vue";
 import Post from "@/interfaces/post";
 import { projectFirestore } from "@/firebase/config"; // ../firebase/config works too

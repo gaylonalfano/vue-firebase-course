@@ -4,5 +4,5 @@ declare module '*.vue' {
   export default component
 }
 
-declare module 'firebase/app';
-declare module 'firebase/firestore';
+// declare module 'firebase/app';
+// declare module 'firebase/firestore';

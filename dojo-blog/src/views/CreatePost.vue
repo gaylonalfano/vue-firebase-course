@@ -22,7 +22,7 @@
 import { defineComponent, ref } from "vue";
 import { useRouter } from "vue-router";
 import Post from "@/interfaces/post";
-import { projectFirestore } from "@/firebase/config";
+import { projectFirestore, timestamp } from "@/firebase/config";
 
 export default defineComponent({
   name: "CreatePost",
@@ -93,10 +93,11 @@ export default defineComponent({
 
     // MY ATTEMPT: Firestore
     async function createPost() {
-      const post: Post = {
+      const post = {
         title: title.value,
         body: body.value,
         tags: tags.value,
+        createdAt: timestamp(),
       };
       const response = await projectFirestore.collection("posts").add(post);
       console.log(response);

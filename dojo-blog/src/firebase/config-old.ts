@@ -29,8 +29,10 @@ const firebaseApp = firebase.initializeApp(firebaseConfig);
 const projectFirestore = firebase.firestore(firebaseApp); // Works???
 // const projectFirestore: firestore = firebase.firestore(firebaseApp); // Nope
 
+const timestamp = firebase.firestore.FieldValue.serverTimestamp; // Function w/ return type of firebase.firestore.FieldValue
 // Export it so we can import/use Firebase into other files/components
 export {
+  timestamp,
   projectFirestore
   // FirebaseFirestore,
   // QuerySnapshot
@@ -38,4 +40,6 @@ export {
   // DocumentReference
   // CollectionReference
 }; // default or not, still doesn't work...
+export type FirestoreTimestamp = firebase.firestore.Timestamp;
+export type FirestoreFieldValue = firebase.firestore.FieldValue;
 // export default projectFirestore; // No luck...
