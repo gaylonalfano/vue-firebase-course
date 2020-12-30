@@ -3,6 +3,7 @@ import Home from "@/views/Home.vue";
 import PostDetails from "@/views/PostDetails.vue";
 import CreatePost from "@/views/CreatePost.vue";
 import Tag from "@/views/Tag.vue";
+import RealTime from "@/views/RealTime.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -26,6 +27,11 @@ const routes: Array<RouteRecordRaw> = [
     name: "Tag",
     component: Tag,
     props: true
+  },
+  {
+    path: "/realtime",
+    name: "RealTime",
+    component: RealTime
   }
 ];
 

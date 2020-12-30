@@ -22,7 +22,9 @@ function getPosts() {
       // NOTE Here's a sample from Google collecting documents. The variable names I think hint at their Types.
       // https://github.com/googleapis/nodejs-firestore/blob/master/samples/limit-to-last-query.js
       const collectionReference = projectFirestore.collection("posts");
-      const postsDocuments = await collectionReference.get();
+      const postsDocuments = await collectionReference
+        .orderBy("createdAt", "desc")
+        .get();
       // const postsDocumentData: Post[] = postsDocuments.docs.map(doc =>
       //   doc.data()
       // );
