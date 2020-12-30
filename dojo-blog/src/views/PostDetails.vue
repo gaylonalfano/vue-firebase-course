@@ -3,6 +3,7 @@
   <div v-if="post" class="post">
     <h3>{{ post.title }}</h3>
     <p class="pre">{{ post.body }}</p>
+    <button @click="deletePost" class="delete">Delete Post</button>
   </div>
   <div v-else>
     <Spinner />
@@ -11,9 +12,10 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import Spinner from "@/components/Spinner.vue";
 import getPost from "@/composables/getPost";
+import { projectFirestore } from "@/firebase/config";
 
 export default defineComponent({
   name: "PostDetails",
@@ -31,7 +33,8 @@ export default defineComponent({
     // WITH using useRoute(): Works
     // Explore details of current route using useRoute()
     const route = useRoute();
-    console.log(route);
+    const router = useRouter();
+    // console.log(route);
 
     // FIXME With TS, I have to type cast 'as string' otherwise breaks.
     const { post, error, request } = getPost(route.params.id as string); // Or can use props.id too
@@ -43,7 +46,15 @@ export default defineComponent({
     // console.log(props.id);
     // console.log(route.params.id);
 
-    return { post, error };
+    async function deletePost() {
+      console.log("Delete Post");
+      // Use await to perform the delete. Don't need to do anything with the returned object.
+      await projectFirestore.collection("posts").doc(props.id).delete(); // Or use route.params.id
+      // Reroute back to named Home route using useRouter()
+      router.push({ name: "Home" }); // Or ("/")
+    }
+
+    return { post, error, deletePost };
   },
 });
 </script>
@@ -81,5 +92,8 @@ export default defineComponent({
 }
 .pre {
   white-space: pre-wrap;
+}
+button.delete {
+  margin: 10px auto;
 }
 </style>
