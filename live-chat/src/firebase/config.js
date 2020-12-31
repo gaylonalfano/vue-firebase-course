@@ -1,5 +1,6 @@
 import firebase from "firebase/app";
 import "firebase/firestore";
+import "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCNuw4lU5I53amsDHGSR0-TSGKFzsGiPzk",
@@ -13,10 +14,13 @@ const firebaseConfig = {
 // Init Firebase App connection to backend
 firebase.initializeApp(firebaseConfig);
 
+// Initialize Authentication Service
+const auth = firebase.auth(); // Or, projectAuth
+
 // Initialize Firestore Service
 // NOTE It's this that allows us to interact with our Firestore
 // to add documents, retrieve collections, etc.
-const db = firebase.firestore(firebaseApp); // Works!
+const db = firebase.firestore(firebaseApp); // Or, projectFirestore
 
 // Let's add a timestamp FieldValue to export to other files.
 // NOTE We are storing a FUNCTION REFERENCE in timestamp
@@ -25,4 +29,4 @@ const timestamp = firebase.firestore.FieldValue.serverTimestamp;
 // NOTE Later we'll add the Authentication Service
 
 // Export it so we can import/use Firebase into other files/components
-export { db, timestamp };
+export { auth, db, timestamp };
