@@ -14,18 +14,22 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
+import useSignup from "@/composables/useSignup";
 
 export default defineComponent({
   name: "SignupForm",
   setup() {
+    // Let's access signup functionality from useSignup 'interface'
+    const { error, signup } = useSignup();
     // Create Refs for our input data properties
     const displayName = ref<string>("");
     const email = ref<string>("");
     const password = ref<string>("");
 
     // Create Signup form submit handler
-    function handleSubmit() {
-      console.log(displayName.value, email.value, password.value);
+    async function handleSubmit() {
+      // console.log(displayName.value, email.value, password.value);
+      await signup(email.value, password.value, displayName.value);
     }
 
     return { displayName, email, password, handleSubmit };
