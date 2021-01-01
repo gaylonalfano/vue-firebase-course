@@ -19,7 +19,7 @@ import useSignup from "@/composables/useSignup";
 export default defineComponent({
   name: "SignupForm",
   setup() {
-    // Let's access signup functionality from useSignup 'interface'
+    // Let's access signup functionality from useSignup 'composable'
     const { error, signup } = useSignup();
     // Create Refs for our input data properties
     const displayName = ref<string>("");
@@ -30,6 +30,7 @@ export default defineComponent({
     async function handleSubmit() {
       // console.log(displayName.value, email.value, password.value);
       await signup(email.value, password.value, displayName.value);
+      console.log("User successfully signed up!");
     }
 
     return { displayName, email, password, handleSubmit };

@@ -16,6 +16,7 @@
       "@/*": ["src/*"]
     },
     "lib": ["esnext", "dom", "dom.iterable", "scripthost"],
+    "removeComments": false,
     "allowJs": true
   },
   "include": [

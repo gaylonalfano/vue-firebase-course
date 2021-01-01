@@ -1,6 +1,6 @@
 <template>
   <div class="welcome container">
-    <p>Welcome Archie! I love you!</p>
+    <p>Welcome</p>
     <div v-if="showLogin">
       <h2>Log in</h2>
       <LoginForm />

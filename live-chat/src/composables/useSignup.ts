@@ -5,11 +5,9 @@ import { auth } from "@/firebase/config";
 const error = ref<string | null>(null);
 
 // Create a signup function to do the actual signing up of users
-async function signup(
-  email: string,
-  password: string,
-  displayName: string
-): Promise<void> {
+// NOTE this function returns Promise<void | firebase.auth.UserCredential>
+// but you can't type it without getting errors, so best just don't type it!
+async function signup(email: string, password: string, displayName: string) {
   // Reset error.value Ref to 'null' for each signup attempt
   // NOTE This resets it for the user in case their attempt fails
   error.value = null;
@@ -22,7 +20,19 @@ async function signup(
       throw new Error("Could not complete signup.");
     }
     // Log the user object
-    console.log(response.user);
+    // console.log(response);
+    // console.log(response.user);
+
+    // Let's update the displayName since it's null when first registering
+    // via auth.createUserWithEmailAndPassword().
+    response.user?.updateProfile({ displayName });
+
+    // Let's reset error.value to null in case it has another value (err.message)
+    error.value = null;
+
+    // Let's return the response object so we can do other things with it.
+    // NOTE response is Type firebase.auth.UserCredential
+    return response;
   } catch (err) {
     console.log(err.message);
     // Update error Ref value with err.message
