@@ -12,7 +12,7 @@ const firebaseConfig = {
 };
 
 // Init Firebase App connection to backend
-firebase.initializeApp(firebaseConfig);
+const firebaseApp = firebase.initializeApp(firebaseConfig);
 
 // Initialize Authentication Service
 const auth = firebase.auth(); // Or, projectAuth
