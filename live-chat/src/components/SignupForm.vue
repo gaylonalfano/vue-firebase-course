@@ -19,7 +19,7 @@ import useSignup from "@/composables/useSignup";
 
 export default defineComponent({
   name: "SignupForm",
-  setup() {
+  setup(props, context) {
     // Let's access signup functionality from useSignup 'composable'
     const { error, signup } = useSignup();
     // Create Refs for our input data properties
@@ -32,6 +32,11 @@ export default defineComponent({
       // console.log(displayName.value, email.value, password.value);
       await signup(email.value, password.value, displayName.value);
       console.log("User successfully signed up!");
+      // Confirm Signup is successful then emit custom event to listen to
+      // inside parent Welcome component
+      if (!error.value) {
+        context.emit("signup");
+      }
     }
 
     return { displayName, email, password, handleSubmit, error };

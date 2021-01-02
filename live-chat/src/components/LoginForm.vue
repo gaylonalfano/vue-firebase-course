@@ -13,7 +13,7 @@ import useLogin from "@/composables/useLogin";
 
 export default defineComponent({
   name: "LoginForm",
-  setup() {
+  setup(props, context) {
     // Let's use our useLogin composable functionality
     const { error, login } = useLogin();
     // Create Refs for our input data properties
@@ -28,6 +28,10 @@ export default defineComponent({
       // If it makes it to this line then it was successful (no error!)
       if (!error.value) {
         console.log("User successfully logged in!");
+        // Emit a custom event so that Welcome can listen for it and respond
+        // by redirecting to Chatroom.
+        // console.log({ context });
+        context.emit("login");
       }
     }
 
