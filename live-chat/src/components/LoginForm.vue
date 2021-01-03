@@ -9,10 +9,25 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
+import { auth } from "@/firebase/config";
 import useLogin from "@/composables/useLogin";
 
 export default defineComponent({
   name: "LoginForm",
+  emits: {
+    login(currentCtxUser) {
+      // Validate our payload (true if good, false is bad)
+      // NOTE Can add type validation as well, etc.
+      console.log("login function PAYLOAD: ", currentCtxUser);
+      // if (currentCtxUser) {
+      //   return true;
+      // } else {
+      //   return false; // invalid payload
+      // }
+      // Can simplify using !! not not syntax
+      return !!currentCtxUser;
+    },
+  },
   setup(props, context) {
     // Let's use our useLogin composable functionality
     const { error, login } = useLogin();
@@ -30,8 +45,11 @@ export default defineComponent({
         console.log("User successfully logged in!");
         // Emit a custom event so that Welcome can listen for it and respond
         // by redirecting to Chatroom.
+        // NOTE: Testing passing user up via emit() payload
+        const currentCtxUser = auth.currentUser;
+        console.log("currentCtxUser: ", currentCtxUser); // Works!
         // console.log({ context });
-        context.emit("login");
+        context.emit("login", currentCtxUser); // Works if pass directly
       }
     }
 

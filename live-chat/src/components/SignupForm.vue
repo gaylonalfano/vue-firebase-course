@@ -19,6 +19,7 @@ import useSignup from "@/composables/useSignup";
 
 export default defineComponent({
   name: "SignupForm",
+  emits: ["signup"],
   setup(props, context) {
     // Let's access signup functionality from useSignup 'composable'
     const { error, signup } = useSignup();

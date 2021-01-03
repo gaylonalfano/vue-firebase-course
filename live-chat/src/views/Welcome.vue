@@ -35,14 +35,27 @@ export default defineComponent({
     // NOTE Shaun used showLogin instead. Easier to follow than isSignedUp
     const showLogin = ref<boolean>(true);
 
-    // Create 'login' event handler to redirect to /chatroom
-    function enterChatroom() {
+    // Create 'login' custom event handler to redirect to /chatroom
+    // NOTE If user was passed via context.emit() payload, then add as arg to this handler
+    // Q: Do I need to define currentCtxUser outside of enterChatroom()? Then return so can use in template?
+    // A: No! Just pass currentCtxUser consistent with how you emit it (directly or within payload object)
+    // Let's receive our emitted payload as an argument to our custom event handler
+    // @ts-ignore
+    function enterChatroom(currentCtxUser) {
       console.log("enterChatroom fired for @login or @signup event");
+      // console.log(
+      //   "currentCtxUser passed from Login context.emit() payload: ",
+      //   context.attrs.currentCtxUser
+      // ); // undefined
+      console.log("enterChatroom currentCtxUser: ", currentCtxUser);
+      // console.log(context); // Nope. {expose: f}
+      // console.log(context.attrs["currentCtxUser"]); // Nope. undefined
       router.push({ name: "Chatroom" });
       // Q: How to get the user details passed as well? Use context?
-      // A: Don't believe so. We use Firebase methods to get the User, etc.
-      console.log(context.attrs);
-      console.log(context.slots);
+      // A: No! We still need to use Firebase methods to get the User, etc. but
+      // A: we can then pass it as payload of context.emit('event', payload)
+      // console.log(context.attrs); // Proxy {__vInternal: 1}
+      // console.log(context.slots); // Proxy {__vInternal: 1}
     }
 
     return { showLogin, enterChatroom };
