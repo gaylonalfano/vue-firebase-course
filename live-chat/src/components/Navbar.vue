@@ -31,7 +31,8 @@ export default defineComponent({
       if (!error.value) {
         console.log("Successfully logged out user.");
         // Redirect to Welcome page
-        router.push({ name: "Welcome" });
+        // NOTE Comment out for testing:
+        // router.push({ name: "Welcome" });
       }
     }
 

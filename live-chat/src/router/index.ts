@@ -13,6 +13,7 @@ import Chatroom from "@/views/Chatroom.vue";
 // Create a Route Guard (Auth Guard) function
 // NOTE Going to use FB auth to grab currentUser (if available)
 // NOTE Need to register this Auth Guard to Chatroom
+// NOTE We add to, from, next because it aligns with beforeEnter method
 // Q: How to add vue-router types so I don't have to use ts-ignore?
 // A: Import from vue-router. Note difference btw expression vs. declaration syntax
 function requireAuthDeclaration(
@@ -23,7 +24,7 @@ function requireAuthDeclaration(
   // NOTE We don't use our getUser composable because we don't need to
   // listen to AuthState changes, etc.
   let user = auth.currentUser;
-  console.log(`RouterGuard:requireAuth:user: ${user}`); // [Object object]
+  // console.log(`RouterGuard:requireAuth:user: ${user}`); // [Object object]
   console.log("RouterGuard:requireAuth:user: ", user); // Works!
 
   if (!user) {
