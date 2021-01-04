@@ -47,7 +47,7 @@ export default defineComponent({
       //   "currentCtxUser passed from Login context.emit() payload: ",
       //   context.attrs.currentCtxUser
       // ); // undefined
-      console.log("enterChatroom currentCtxUser: ", currentCtxUser);
+      console.log("Welcome:enterChatroom:currentCtxUser: ", currentCtxUser);
       // console.log(context); // Nope. {expose: f}
       // console.log(context.attrs["currentCtxUser"]); // Nope. undefined
       router.push({ name: "Chatroom" });

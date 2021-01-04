@@ -18,7 +18,7 @@ export default defineComponent({
     login(currentCtxUser) {
       // Validate our payload (true if good, false is bad)
       // NOTE Can add type validation as well, etc.
-      console.log("login function PAYLOAD: ", currentCtxUser);
+      // console.log("login function PAYLOAD: ", currentCtxUser);
       // if (currentCtxUser) {
       //   return true;
       // } else {
@@ -47,7 +47,7 @@ export default defineComponent({
         // by redirecting to Chatroom.
         // NOTE: Testing passing user up via emit() payload
         const currentCtxUser = auth.currentUser;
-        console.log("currentCtxUser: ", currentCtxUser); // Works!
+        console.log("LoginForm:handleSubmit:currentCtxUser: ", currentCtxUser); // Works!
         // console.log({ context });
         context.emit("login", currentCtxUser); // Works if pass directly
       }
