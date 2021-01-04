@@ -7,6 +7,7 @@
     <div v-else>
       <h3>No User!</h3>
     </div>
+    <NewChatForm />
   </div>
 </template>
 
@@ -14,11 +15,12 @@
 import { defineComponent, watch, computed } from "vue";
 import { useRouter } from "vue-router";
 import Navbar from "@/components/Navbar.vue";
+import NewChatForm from "@/components/NewChatForm.vue";
 import getUser from "@/composables/getUser";
 
 export default defineComponent({
   name: "Chatroom",
-  components: { Navbar },
+  components: { Navbar, NewChatForm },
   setup() {
     // Let's get the user from getUser composable
     const { user } = getUser();
