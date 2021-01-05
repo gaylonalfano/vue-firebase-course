@@ -42,6 +42,7 @@ export default defineComponent({
     // Let's receive our emitted payload as an argument to our custom event handler
     // @ts-ignore
     function enterChatroom(currentCtxUser) {
+      // Q: How to find out which event was triggered (login vs. signup)?
       console.log("enterChatroom fired for @login or @signup event");
       // console.log(
       //   "currentCtxUser passed from Login context.emit() payload: ",
