@@ -21,6 +21,7 @@ auth.onAuthStateChanged(() => {
   // Check that we have an app. We only run this inner code ONCE to create our app
   // All other times (e.g, user signed out, login, etc.) it doesn't run inner code.
   if (!app) {
+    console.log("No app available. Creating new app and mounting to DOM.");
     // If not, create it and mount to DOM
     app = createApp(App)
       .use(router)

@@ -15,11 +15,25 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
+import { auth } from "@/firebase/config";
 import useSignup from "@/composables/useSignup";
 
 export default defineComponent({
   name: "SignupForm",
-  emits: ["signup"],
+  emits: {
+    signup(currentCtxUser) {
+      // Validate our payload (true if good, false is bad)
+      // NOTE Can add type validation as well, etc.
+      console.log("signup function payload VALIDATION: ", currentCtxUser);
+      if (currentCtxUser) {
+        return true;
+      } else {
+        return false; // invalid payload
+      }
+      // NOTE Can simplify using !! not not syntax
+      // return !!currentCtxUser;
+    },
+  },
   setup(props, context) {
     // Let's access signup functionality from useSignup 'composable'
     const { error, signup } = useSignup();
@@ -36,7 +50,13 @@ export default defineComponent({
       // Confirm Signup is successful then emit custom event to listen to
       // inside parent Welcome component
       if (!error.value) {
-        context.emit("signup");
+        // Let's get the current user and pass as payload in emit()
+        // NOTE Keeping consistent with LoginForm context.emit('login')
+        // since Welcome has user as arg for enterChatroom(currentCtxUser)
+        const currentCtxUser = auth.currentUser;
+        console.log("SignupForm:handleSubmit:currentCtxUser: ", currentCtxUser); // Works!
+        // Emit 'signup' event and pass user as payload
+        context.emit("signup", currentCtxUser);
       }
     }
 

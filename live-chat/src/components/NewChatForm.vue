@@ -6,6 +6,7 @@
       @keypress.enter.prevent="submitChatRecord"
     >
     </textarea>
+    <div class="error">{{ error }}</div>
   </form>
 </template>
 
@@ -13,12 +14,16 @@
 import { defineComponent, ref } from "vue";
 import { timestamp } from "@/firebase/config";
 import getUser from "@/composables/getUser";
+import useCollection from "@/composables/useCollection";
 
 export default defineComponent({
   name: "NewChatForm",
   setup() {
     // Use our getUser composable to get the user info
     const { user } = getUser();
+
+    // Use our useCollection composable to add doc to messages
+    const { error, addDoc } = useCollection("messages");
 
     // Create a 'message' ref to bind with template v-model data property
     const message = ref<string>("");
@@ -33,13 +38,17 @@ export default defineComponent({
       };
 
       // TODO Eventually send chatRecord to FB database to get stored
-      console.log(chatRecord);
+      console.log("submitChatRecord:chatRecord: ", chatRecord);
+      // NOTE addDoc will connect to collection arg passed to useCollection("messages")
+      await addDoc(chatRecord); // Works! Created 'messages' collection too!
 
-      // Reset/clear the textarea after submit
-      message.value = "";
+      // Reset/clear the textarea if no error i.e., error.value = null
+      if (!error.value) {
+        message.value = "";
+      }
     }
 
-    return { message, submitChatRecord };
+    return { message, submitChatRecord, error };
   },
 });
 </script>

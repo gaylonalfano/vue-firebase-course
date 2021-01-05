@@ -31,7 +31,8 @@ export default defineComponent({
       if (!error.value) {
         console.log("Successfully logged out user.");
         // Redirect to Welcome page
-        // NOTE Comment out for testing:
+        // NOTE This approach works as well!
+        // Alternative is to watch(user) for changes and reroute inside Chatroom.
         // router.push({ name: "Welcome" });
       }
     }
