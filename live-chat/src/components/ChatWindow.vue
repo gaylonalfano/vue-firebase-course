@@ -3,9 +3,13 @@
     <div v-if="error">
       {{ error }}
     </div>
-    <div v-if="messages" class="messages">
-      <div v-for="message in messages" :key="message.id" class="single-message">
-        <span class="created-at">{{ message.createdAt.toDate() }}</span>
+    <div v-if="formattedMessages" class="messages">
+      <div
+        v-for="message in formattedMessages"
+        :key="message.id"
+        class="single-message"
+      >
+        <span class="created-at">{{ message.createdAt }}</span>
         <span class="name">{{ message.name }}</span>
         <span class="message">{{ message.message }}</span>
       </div>
@@ -14,8 +18,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, computed } from "vue";
+import { formatDistanceToNow } from "date-fns";
 import getCollection from "@/composables/getCollection";
+import {
+  QuerySnapshot,
+  QueryDocumentSnapshot,
+  DocumentData,
+} from "@firebase/firestore-types";
 
 export default defineComponent({
   name: "ChatWindow",
@@ -26,7 +36,25 @@ export default defineComponent({
     const { error, documents: messages } = getCollection("messages");
     console.log("ChatWindow:messages.value: ", messages.value); // null
 
-    return { error, messages };
+    // Create a new computed property. We used computed() to do this
+    // because it's based on something that ALREADY exists!
+    // In this case, we're going to compute formattedMessages array
+    // That updates/formats the createdAt property.
+    const formattedMessages = computed(() => {
+      // Check that we actually have documents
+      if (messages.value) {
+        return messages.value.map((message) => {
+          // ERROR: I get TS error if I don't use message.data()
+          // It compiles if I use TS IGNORE but not ideal
+          // @ts-ignore
+          let time = formatDistanceToNow(message.createdAt.toDate());
+          // Return a new object with updated createdAt value
+          return { ...message, createdAt: time };
+        });
+      }
+    });
+
+    return { error, messages, formattedMessages };
   },
 });
 </script>
