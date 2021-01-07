@@ -10,13 +10,33 @@ import { auth } from "@/firebase/config";
 import Welcome from "@/views/Welcome.vue";
 import Chatroom from "@/views/Chatroom.vue";
 
+// Creating another Route Guard for Welcome page for logged-in users
+// They should be redirected to Chatroom if logged in already
+function requireNoAuth(
+  to: RouteLocationNormalized,
+  from: RouteLocationNormalized,
+  next: NavigationGuardNext
+) {
+  // Grab current user if logged in
+  let user = auth.currentUser;
+  console.log("RouterGuard:requireNoAuth:user ", user);
+
+  if (user) {
+    // Redirect to Chatroom route
+    next({ name: "Chatroom" });
+  } else {
+    // Let them through/continue to Welcome page
+    next();
+  }
+}
+
 // Create a Route Guard (Auth Guard) function
 // NOTE Going to use FB auth to grab currentUser (if available)
 // NOTE Need to register this Auth Guard to Chatroom
 // NOTE We add to, from, next because it aligns with beforeEnter method
 // Q: How to add vue-router types so I don't have to use ts-ignore?
 // A: Import from vue-router. Note difference btw expression vs. declaration syntax
-function requireAuthDeclaration(
+function requireAuth(
   to: RouteLocationNormalized,
   from: RouteLocationNormalized,
   next: NavigationGuardNext
@@ -48,6 +68,8 @@ const routes: Array<RouteRecordRaw> = [
     path: "/",
     name: "Welcome",
     component: Welcome,
+    // Register our Route Guard for logged-in users
+    beforeEnter: requireNoAuth,
   },
   {
     path: "/chatroom",
@@ -55,7 +77,7 @@ const routes: Array<RouteRecordRaw> = [
     component: Chatroom,
     // Need to register our Auth Guard as a reference
     // beforeEnter: requireAuthExpression,
-    beforeEnter: requireAuthDeclaration,
+    beforeEnter: requireAuth,
   },
 ];
 
