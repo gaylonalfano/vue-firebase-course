@@ -1,4 +1,4 @@
-import { ref } from "vue";
+import { ref, watchEffect } from "vue";
 import { db } from "@/firebase/config";
 import {
   QuerySnapshot,
@@ -23,8 +23,10 @@ function getCollection(collection: string) {
   // NOTE onNext callback returns snapshot object that contains all the docs, etc.
   // NOTE We didn't chain .onSnapshot() so we can keep it more general purpose
   // use in other places in this function if needed.
-  collectionRef.onSnapshot(
+  // UPDATE Storing this in const to unsubscribe from listener after a component un-mounts
+  const unsubscribe = collectionRef.onSnapshot(
     (snapshot: QuerySnapshot<DocumentData>) => {
+      console.log("snapshot"); // Keeping track of how many times the listener stacks up
       // Use snapshot object to update documents Ref
       // Q: results even needed? map() returns Array already...
       // A: Yes, have problems using TS if I don't separate.
@@ -71,6 +73,18 @@ function getCollection(collection: string) {
       error.value = "Could not fetch collectionRef onSnapshot data.";
     }
   );
+
+  // === Unsusbscribe to our real-time listeners when component un-mounts
+  watchEffect((onInvalidate) => {
+    // Unsusbscribe from prev collection when watcher is stopped (component unmounted)
+    // NOTE onInvalidate function runs when component un-mounts.
+    onInvalidate(() => {
+      // NOTE It's at THIS point that we will unsubscribe our real-time listener
+      // We simply store our listener function (getCollection) into a const and re-invoke to stop.
+      unsubscribe();
+    });
+  });
+
   return { documents, error };
 }
 

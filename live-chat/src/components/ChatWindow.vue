@@ -40,19 +40,21 @@ export default defineComponent({
       // console.log(messagesDivRef, messagesDivRef.value); // RefImpl, <div class="messages">
 
       // Let's access our messages HTMLDivElement and make it auto-scroll to bottom
-      if (messagesDivRef.value) {
-        // === Using Element.scrollTop = Element.scrollHeight (older approach)
-        messagesDivRef.value.scrollTop = messagesDivRef.value?.scrollHeight; // WORKS!
-        // === Using Element.scrollIntoView() seems like a modern solution
-        // messagesDivRef.value.scrollIntoView({
-        //   behavior: "smooth",
-        //   block: "end",
-        //   inline: "nearest",
-        // }); // NOPE!
-        // messagesDivRef.value.scrollIntoView(false); // NOPE!
-      }
+      messagesDivRef.value!.scrollTop = messagesDivRef.value!.scrollHeight; // WORKS!
     });
-
+    // NOTE I don't need this logic check!
+    // if (messagesDivRef.value) {
+    // // === Using Element.scrollTop = Element.scrollHeight (older approach)
+    // messagesDivRef.value.scrollTop = messagesDivRef.value?.scrollHeight; // WORKS!
+    // === Using Element.scrollIntoView() seems like a modern solution
+    // messagesDivRef.value.scrollIntoView({
+    //   behavior: "smooth",
+    //   block: "end",
+    //   inline: "nearest",
+    // }); // NOPE!
+    // messagesDivRef.value.scrollIntoView(false); // NOPE!
+    // }
+    // });
     // ==== Format Date Method 1: Use computed() to create new array with new time
     // Create a new computed property. We used computed() to do this
     // because it's based on something that ALREADY exists!
