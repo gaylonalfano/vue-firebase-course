@@ -1,0 +1,6 @@
+{
+  "projects": {
+    "default": "vue-firebase-sites-d0f55",
+    "staging": "vue-firebase-sites-d0f55"
+  }
+}
