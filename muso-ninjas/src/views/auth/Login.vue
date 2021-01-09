@@ -28,7 +28,10 @@ export default defineComponent({
       const response = await login(email.value, password.value);
 
       if (!error.value) {
-        console.log("SUCCESS:Login:handleLogin:response", response?.user);
+        console.log(
+          "SUCCESS:Login:handleLogin:response.user: ",
+          response?.user
+        );
       }
     }
 
