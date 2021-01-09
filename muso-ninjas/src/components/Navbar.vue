@@ -4,9 +4,13 @@
       <img src="@/assets/ninja.png" alt="Ninja wearing headphones" />
       <h1><router-link :to="{ name: 'Home' }">Muso Ninjas</router-link></h1>
       <div class="links">
-        <button>Logout</button>
-        <router-link :to="{ name: 'Signup' }" class="btn">Signup</router-link>
-        <router-link :to="{ name: 'Login' }" class="btn">Login</router-link>
+        <div v-if="user">
+          <button @click="handleLogout">Logout</button>
+        </div>
+        <div v-else>
+          <router-link :to="{ name: 'Signup' }" class="btn">Signup</router-link>
+          <router-link :to="{ name: 'Login' }" class="btn">Login</router-link>
+        </div>
       </div>
     </nav>
   </div>
@@ -14,9 +18,31 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { useRouter } from "vue-router";
+import useLogout from "@/composables/useLogout";
+import getUser from "@/composables/getUser";
 
 export default defineComponent({
   name: "Navbar",
+  setup() {
+    // Use composables
+    const { error, logout } = useLogout();
+    const { user } = getUser();
+
+    const router = useRouter();
+
+    // Handle the logout and
+    async function handleLogout() {
+      await logout();
+      // redirect to /login page
+      if (!error.value) {
+        console.log("SUCCESS:handleLogout");
+        router.push({ name: "Login" });
+      }
+    }
+
+    return { error, handleLogout, user };
+  },
 });
 </script>
 
