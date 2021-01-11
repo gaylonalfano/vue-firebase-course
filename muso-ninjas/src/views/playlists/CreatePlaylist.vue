@@ -20,12 +20,15 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import useCollection from "@/composables/useCollection";
+import useStorage from "@/composables/useStorage";
 
 export default defineComponent({
   name: "CreatePlaylist",
   setup() {
     // Composable to interact/add doc to collection
     const { error, addDoc, isPending } = useCollection("playlists");
+    // Q: Rename 'error' to something unique to avoid clashing with other error vars?
+    const { filePath, fileUrl, uploadImage } = useStorage();
 
     // Data properties Refs
     const title = ref<string>("");
@@ -51,6 +54,13 @@ export default defineComponent({
           console.log("SUCCESS:handleCreatePlaylist:playlist: ");
           // NOTE No need to reset error.value since already null
         } // Else, display error inside template
+
+        // Upload the file to our storage
+        await uploadImage(coverImageFile.value);
+        // const response = await uploadImage(coverImageFile.value);
+        // console.log(response); // undefined
+        // Check if we have a fileUrl.value (means it worked I think)
+        console.log("fileUrl.value: ", fileUrl.value);
       } else {
         // Inform user that a valid file must be uploaded
         fileError.value = "Please select an image file (png or jpeg)";
