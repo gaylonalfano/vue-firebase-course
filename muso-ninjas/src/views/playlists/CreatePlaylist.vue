@@ -13,22 +13,25 @@
     <!-- <div v-if="error" class="error">{{ error }}</div> -->
     <div v-if="fileError" class="error">{{ fileError }}</div>
     <button v-if="!isPending">Create</button>
-    <button v-if="isPending" disabled>Loading...</button>
+    <button v-else disabled>Saving...</button>
   </form>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
+import { timestamp } from "@/firebase/config";
 import useCollection from "@/composables/useCollection";
 import useStorage from "@/composables/useStorage";
+import getUser from "@/composables/getUser";
 
 export default defineComponent({
   name: "CreatePlaylist",
   setup() {
     // Composable to interact/add doc to collection
-    const { error, addDoc, isPending } = useCollection("playlists");
+    const { error, addDoc } = useCollection("playlists");
     // Q: Rename 'error' to something unique to avoid clashing with other error vars?
     const { filePath, fileUrl, uploadImage } = useStorage();
+    const { user } = getUser();
 
     // Data properties Refs
     const title = ref<string>("");
@@ -36,31 +39,49 @@ export default defineComponent({
     // Handle file upload changes. Use 'File' TS type
     const coverImageFile = ref<File | null>(null);
     const fileError = ref<string | null>(null);
+    // Create a local isPending variable since we're handling multiple things
+    const isPending = ref<boolean>(false);
 
     // Handle form submission to add document (playlist)
     // NOTE addDoc is async so need to make this async as well so we can await
     async function handleCreatePlaylist() {
       // Check that a file (and it's valid) has been uploaded
       if (coverImageFile.value) {
-        // console.log(title.value, description.value, coverImageFile.value);
-        // Package up user inputs into a playlist object
-        const playlist = { title: title.value, description: description.value };
+        // Toggle isPending to start (true)
+        isPending.value = true;
 
-        // Use addDoc(playlist) to try to create the document
-        // NOTE addDoc is async so need to await
-        await addDoc(playlist);
-
-        if (!error.value) {
-          console.log("SUCCESS:handleCreatePlaylist:playlist: ");
-          // NOTE No need to reset error.value since already null
-        } // Else, display error inside template
-
-        // Upload the file to our storage
+        // Upload the file to our storage so we can get the fileUrl
+        // to pass into new playlist object
         await uploadImage(coverImageFile.value);
         // const response = await uploadImage(coverImageFile.value);
         // console.log(response); // undefined
         // Check if we have a fileUrl.value (means it worked I think)
         console.log("fileUrl.value: ", fileUrl.value);
+
+        // console.log(title.value, description.value, coverImageFile.value);
+        // Package up user inputs into a playlist object along with fileUrl
+        const playlist = {
+          title: title.value,
+          description: description.value,
+          userId: user.value?.uid,
+          userName: user.value?.displayName,
+          coverImageUrl: fileUrl.value,
+          coverImagePath: filePath.value, // for deleting files
+          songs: [],
+          createdAt: timestamp(),
+        };
+
+        // Use addDoc(playlist) to try to create the document
+        // NOTE addDoc is async so need to await
+        await addDoc(playlist);
+
+        // Toggle isPending to end (false)
+        isPending.value = false;
+
+        if (!error.value) {
+          console.log("SUCCESS:handleCreatePlaylist:playlist: ");
+          // NOTE No need to reset error.value since already null
+        } // Else, display error inside template
       } else {
         // Inform user that a valid file must be uploaded
         fileError.value = "Please select an image file (png or jpeg)";
