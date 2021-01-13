@@ -1,0 +1,59 @@
+<template>
+  <div v-for="playlist in playlists" :key="playlist.id">
+    <div class="single-playlist">
+      <div class="thumbnail">
+        <img :src="playlist.coverImageUrl" />
+      </div>
+      <div class="playlist-info">
+        <h3>{{ playlist.title }}</h3>
+        <p>Created by {{ playlist.userName }}</p>
+      </div>
+      <div class="song-number">
+        <p>{{ playlist.songs.length }}</p>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import { defineComponent } from "vue";
+
+export default defineComponent({
+  name: "ListView",
+  props: ["playlists"],
+});
+</script>
+
+<style scoped>
+.single-playlist {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  border-radius: 10px;
+  background: white;
+  margin: 16px 0;
+  transition: all ease 0.2s;
+}
+.single-playlist:hover {
+  box-shadow: 1px 2px 3px rgba(50, 50, 50, 0.05);
+  transform: scale(1.02);
+  transition: all ease 0.2s;
+}
+.thumbnail {
+  max-width: 100px;
+  max-height: 100px;
+  overflow: hidden;
+  border-radius: 10px;
+}
+img {
+  max-width: 150%;
+  max-height: 150%;
+  display: block;
+}
+.playlist-info {
+  margin: 0 30px;
+}
+.song-number {
+  margin-left: auto;
+}
+</style>
