@@ -19,6 +19,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
+import { useRouter } from "vue-router";
 import { timestamp } from "@/firebase/config";
 import useCollection from "@/composables/useCollection";
 import useStorage from "@/composables/useStorage";
@@ -41,6 +42,9 @@ export default defineComponent({
     const fileError = ref<string | null>(null);
     // Create a local isPending variable since we're handling multiple things
     const isPending = ref<boolean>(false);
+
+    // Create a useRouter() instance to redirect to new /playlist/:id
+    const router = useRouter();
 
     // Handle form submission to add document (playlist)
     // NOTE addDoc is async so need to make this async as well so we can await
@@ -73,7 +77,9 @@ export default defineComponent({
 
         // Use addDoc(playlist) to try to create the document
         // NOTE addDoc is async so need to await
-        await addDoc(playlist);
+        // UPDATE: Save the response and return it so we can access the
+        // new document.id and reroute to /playlists/:id
+        const response = await addDoc(playlist);
 
         // Toggle isPending to end (false)
         isPending.value = false;
@@ -81,6 +87,12 @@ export default defineComponent({
         if (!error.value) {
           console.log("SUCCESS:handleCreatePlaylist:playlist: ");
           // NOTE No need to reset error.value since already null
+          // Access response/DocumentReference and its id to reroute
+          // to new /playlists/:id route
+          router.push({
+            name: "PlaylistDetails",
+            params: { id: response!.id }, // Add '!' to response
+          });
         } // Else, display error inside template
       } else {
         // Inform user that a valid file must be uploaded

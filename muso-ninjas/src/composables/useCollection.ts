@@ -21,10 +21,14 @@ function useCollection(collection: string) {
 
     // Try to add a doc to collection
     try {
-      await db.collection(collection).add(doc);
+      // Save the response and return it so we can access the
+      // new document.id and reroute to /playlists/:id
+      const response = await db.collection(collection).add(doc);
       // Reset our isPending back to false since request is over
       isPending.value = false;
       console.log("addDoc:add:doc successful!", doc);
+      console.log("addDoc:add:response: ", response);
+      return response;
     } catch (err) {
       console.log(err.message);
       error.value = "Could not add document.";
