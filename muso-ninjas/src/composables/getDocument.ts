@@ -13,7 +13,10 @@ function getDocument(collection: string, id: string) {
   // Create refs for document and error since they are unique to collection
   // Q: Better type for documents? If I use FS Types I get errors.
   // A: Use generic types 'object | null' and it works later when updating document.value
-  const document = ref<object | null>(null);
+  const document = ref<object | null>(null); // Works but later issues
+  // Q: What about making more specific? With object I run into errors later on
+  // when trying to confirm playlist.value.userId == user.value.uid
+  // const document = ref<DocumentSnapshot<DocumentData> | null>(null); // document.value ERROR...
   const error = ref<string | null>(null);
 
   // Create a ref for our document as well and sort
@@ -30,6 +33,7 @@ function getDocument(collection: string, id: string) {
     (doc: DocumentSnapshot<DocumentData>) => {
       console.log("snapshot"); // Keeping track of how many times the listener stacks up
       // Confirm that the 'doc' actually exists
+      // NOTE: Shaun used if (doc.data())
       if (doc.exists) {
         console.log("PASSED:doc.exists");
         // We have a doc. Let's update our document.value Ref by spreading

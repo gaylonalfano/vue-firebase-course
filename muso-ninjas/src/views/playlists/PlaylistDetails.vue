@@ -10,6 +10,7 @@
       <h2>{{ playlist.title }}</h2>
       <p class="username">Created by: {{ playlist.userName }}</p>
       <p class="description">{{ playlist.description }}</p>
+      <button v-if="isOwner">Delete Playlist</button>
     </div>
 
     <!-- song list on right side -->
@@ -17,37 +18,73 @@
       <h3>No. of songs: {{ playlist.songs.length }}</h3>
       <p>Song list goes here...</p>
       <!-- <div v-for="song in playlist.songs" :key="song.name"></div> -->
+      <h2>user.displayName: {{ user.displayName }}</h2>
+      <div v-if="user.displayName === playlist.userName">
+        <h2>user.diplayName === playlist.userName</h2>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-// import { useRoute } from "vue-router";
+import { defineComponent, computed } from "vue";
+// import { auth } from "@/firebase/config";
 import getDocument from "@/composables/getDocument";
+import getUser from "@/composables/getUser";
 
 export default defineComponent({
   name: "PlaylistDetails",
   props: ["id"],
   setup(props) {
-    // Let's get our route params using useRoute()
-    // UPDATE: Not needed! Just pass props to setup(props)!
-    // const route = useRoute();
-    // console.log("route.params: ", route.params); // Works
-
     // Bring in getDocument composable
     // Q: How can I pass the 'id' prop? First get useRoute()?
     // A: Pass props inside setup(props) then props.id
     // === Method using setup(props)
     const { document: playlist, error } = getDocument("playlists", props.id);
-    // === Method using useRoute()
-    // const { document: playlist, error } = getDocument(
-    //   "playlists",
-    //   route.params.id as string
-    // );
-    // console.log("playlist.value: ", playlist.value); // null initially
+    console.log("playlist.value: ", playlist.value); // null initially
+    // ======= SHAUN'S APPROACH using getUser(), computed(), etc.
+    // Grab current user to check if playlist owner
+    const { user } = getUser();
 
-    return { playlist, error };
+    // Create a computed() property to track owner since dependent on user data
+    // NOTE Shaun called is 'ownership'
+    const isOwner = computed(() => {
+      // Return true if three conditions are met:
+      return (
+        // FIXME Gotta figure out the TS/Vetur Error. Optional chaining doesn't work
+        // @ts-ignore
+        playlist.value && user.value && user.value.uid == playlist.value?.userId
+      );
+    });
+
+    // // ======= MY ATTEMPT using auth.currentUser
+    // // Grab current user to check if playlist owner
+    // const user = auth.currentUser;
+    // // Q: Need a ref? I think maybe since we will eventually allow adding songs
+    // // which will force a reload/remount of the component instance, right?
+    // // However, it may not matter since we're only dealing with auth users. They log
+    // // out, they reroute to /login.
+    // let isOwner: boolean;
+    // if (!error.value && user) {
+    //   // NOTE: I can't check if(playlist.value) because it's originally null! Need to use error.value
+    //   console.log(
+    //     "PASSED:!error.value && user:playlist.value: ",
+    //     playlist.value
+    //   );
+    //   console.log(
+    //     "PASSED:!error.value && user:user.displayName: ",
+    //     user?.displayName
+    //   );
+
+    //   // Check whether current auth user is playlist owner
+    //   // TS2339: Property 'userName' does not exist on type 'UnwrappedObject<object>'.
+    //   // Q: Do I perform the check here or in template?
+    //   // A: If I do the check inside template, it works just fine...
+    //   // if (user.displayName === playlist.value.username) {
+    //   // }
+    // }
+
+    return { playlist, error, user, isOwner };
   },
 });
 </script>
