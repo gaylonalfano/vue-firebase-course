@@ -10,7 +10,9 @@
       <h2>{{ playlist.title }}</h2>
       <p class="username">Created by: {{ playlist.userName }}</p>
       <p class="description">{{ playlist.description }}</p>
-      <button v-if="isOwner">Delete Playlist</button>
+      <button v-if="isOwner" @click="handleDeletePlaylist">
+        Delete Playlist
+      </button>
     </div>
 
     <!-- song list on right side -->
@@ -31,6 +33,7 @@ import { defineComponent, computed } from "vue";
 // import { auth } from "@/firebase/config";
 import getDocument from "@/composables/getDocument";
 import getUser from "@/composables/getUser";
+import useDocument from "@/composables/useDocument";
 
 export default defineComponent({
   name: "PlaylistDetails",
@@ -45,10 +48,14 @@ export default defineComponent({
     // ======= SHAUN'S APPROACH using getUser(), computed(), etc.
     // Grab current user to check if playlist owner
     const { user } = getUser();
+    // useDocument() composable to access deleteDoc()
+    // FIXME Again, running into Vetur 2339 issues with playlist.value?.id
+    // @ts-ignore
+    const { deleteDoc } = useDocument("playlists", playlist.value?.id);
 
     // Create a computed() property to track owner since dependent on user data
     // NOTE Shaun called is 'ownership'
-    const isOwner = computed(() => {
+    const isOwner = computed<boolean | null>(() => {
       // Return true if three conditions are met:
       return (
         // FIXME Gotta figure out the TS/Vetur Error. Optional chaining doesn't work
@@ -56,6 +63,17 @@ export default defineComponent({
         playlist.value && user.value && user.value.uid == playlist.value?.userId
       );
     });
+
+    // TODO Add handleDeletePlaylist() handler logic
+    // FIXME playlist.value.id Vetur error...
+    async function handleDeletePlaylist() {
+      // @ts-ignore
+      if ((playlist.value?.id as string) && isOwner.value) {
+        console.log(
+          "PASSED:handleDeletePlaylist:playlist.value.id && isOwner.value"
+        );
+      }
+    }
 
     // // ======= MY ATTEMPT using auth.currentUser
     // // Grab current user to check if playlist owner
@@ -84,7 +102,7 @@ export default defineComponent({
     //   // }
     // }
 
-    return { playlist, error, user, isOwner };
+    return { playlist, error, user, isOwner, handleDeletePlaylist };
   },
 });
 </script>
