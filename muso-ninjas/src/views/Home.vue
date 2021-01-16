@@ -8,16 +8,22 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, Ref } from "vue";
 import ListView from "@/components/ListView.vue";
 import getCollection from "@/composables/getCollection";
+import Playlist from "@/interfaces/playlist";
 
 export default defineComponent({
   name: "Home",
   components: { ListView },
   setup() {
     // Composables
-    const { documents: playlists, error } = getCollection("playlists");
+    // Q: How to add Playlist type to playists?
+    // A: Add Type assertions on right-hand side
+    const { documents: playlists, error } = getCollection("playlists") as {
+      documents: Ref<Playlist[] | null>;
+      error: Ref<string | null>;
+    };
 
     return { playlists, error };
   },

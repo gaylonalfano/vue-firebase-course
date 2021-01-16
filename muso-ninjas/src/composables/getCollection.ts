@@ -16,7 +16,7 @@ function getCollection(collection: string) {
   const error = ref<string | null>(null);
 
   // Create a ref for our collection as well and sort
-  // NOTE Type is CollectionReference<DocumentData>
+  // NOTE db.collection(collection) Type is CollectionReference<DocumentData>
   const collectionRef = db.collection(collection).orderBy("createdAt");
 
   // Let's now use onSnapshot() to add real-time listener for QuerySnapshot events

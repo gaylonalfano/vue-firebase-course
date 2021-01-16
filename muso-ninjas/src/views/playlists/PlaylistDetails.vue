@@ -30,24 +30,11 @@
 
 <script lang="ts">
 import { defineComponent, computed, Ref } from "vue";
-import { Timestamp } from "@firebase/firestore-types";
-// import { auth } from "@/firebase/config";
+// import { Timestamp } from "@firebase/firestore-types";
 import getDocument from "@/composables/getDocument";
 import getUser from "@/composables/getUser";
 import useDocument from "@/composables/useDocument";
-
-// Seeing if I can create an interface to address my Vetur/TS Errors
-interface Playlist {
-  id: string;
-  coverImagePath: string;
-  coverImageUrl: string;
-  createdAt: Timestamp;
-  description: string;
-  songs: string[];
-  title: string;
-  userId: string;
-  userName: string;
-}
+import Playlist from "@/interfaces/playlist";
 
 export default defineComponent({
   name: "PlaylistDetails",
@@ -56,9 +43,13 @@ export default defineComponent({
     // Bring in getDocument composable
     // Q: How can I pass the 'id' prop? First get useRoute()?
     // A: Pass props inside setup(props) then props.id
-    // === Method using setup(props)
-    const { document: playlist, error } = getDocument("playlists", props.id);
-    console.log("playlist.value: ", playlist.value); // null initially
+    // UPDATE Add Playlist Type using Type Assertions. Otherwise playist
+    // is a Ref<UnwrappedObject<object> | null> Type.
+    const { document: playlist, error } = getDocument(
+      "playlists",
+      props.id
+    ) as { document: Ref<Playlist | null>; error: Ref<string | null> };
+    // console.log("playlist.value: ", playlist.value); // null initially
     // ======= SHAUN'S APPROACH using getUser(), computed(), etc.
     // Grab current user to check if playlist owner
     const { user } = getUser();
@@ -76,7 +67,7 @@ export default defineComponent({
       // Return true if three conditions are met:
       return (
         // FIXME Gotta figure out the TS/Vetur Error. Optional chaining doesn't work
-        // Works if I cast playlist.value as Playlist!
+        // UPDATE Works if I cast playlist.value as Playlist!
         (playlist.value as Playlist) &&
         user.value &&
         user.value.uid == (playlist.value as Playlist)?.userId
@@ -86,40 +77,12 @@ export default defineComponent({
     // TODO Add handleDeletePlaylist() handler logic
     // FIXME playlist.value.id Vetur error...
     async function handleDeletePlaylist() {
-      // @ts-ignore
-      if ((playlist.value?.id as string) && isOwner.value) {
+      if ((playlist.value as Playlist).id && isOwner.value) {
         console.log(
           "PASSED:handleDeletePlaylist:playlist.value.id && isOwner.value"
         );
       }
     }
-
-    // // ======= MY ATTEMPT using auth.currentUser
-    // // Grab current user to check if playlist owner
-    // const user = auth.currentUser;
-    // // Q: Need a ref? I think maybe since we will eventually allow adding songs
-    // // which will force a reload/remount of the component instance, right?
-    // // However, it may not matter since we're only dealing with auth users. They log
-    // // out, they reroute to /login.
-    // let isOwner: boolean;
-    // if (!error.value && user) {
-    //   // NOTE: I can't check if(playlist.value) because it's originally null! Need to use error.value
-    //   console.log(
-    //     "PASSED:!error.value && user:playlist.value: ",
-    //     playlist.value
-    //   );
-    //   console.log(
-    //     "PASSED:!error.value && user:user.displayName: ",
-    //     user?.displayName
-    //   );
-
-    //   // Check whether current auth user is playlist owner
-    //   // TS2339: Property 'userName' does not exist on type 'UnwrappedObject<object>'.
-    //   // Q: Do I perform the check here or in template?
-    //   // A: If I do the check inside template, it works just fine...
-    //   // if (user.displayName === playlist.value.username) {
-    //   // }
-    // }
 
     return { playlist, error, user, isOwner, handleDeletePlaylist };
   },

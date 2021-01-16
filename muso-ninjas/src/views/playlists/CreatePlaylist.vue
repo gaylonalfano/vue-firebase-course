@@ -18,12 +18,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, Ref } from "vue";
 import { useRouter } from "vue-router";
 import { timestamp } from "@/firebase/config";
+import { DocumentReference, FieldValue } from "@firebase/firestore-types";
 import useCollection from "@/composables/useCollection";
 import useStorage from "@/composables/useStorage";
 import getUser from "@/composables/getUser";
+import Playlist from "@/interfaces/playlist";
 
 export default defineComponent({
   name: "CreatePlaylist",
@@ -67,7 +69,7 @@ export default defineComponent({
         const playlist = {
           title: title.value,
           description: description.value,
-          userId: user.value?.uid,
+          userId: user.value!.uid,
           userName: user.value?.displayName,
           coverImageUrl: fileUrl.value,
           coverImagePath: filePath.value, // for deleting files
@@ -79,7 +81,11 @@ export default defineComponent({
         // NOTE addDoc is async so need to await
         // UPDATE: Save the response and return it so we can access the
         // new document.id and reroute to /playlists/:id
-        const response = await addDoc(playlist);
+        // UPDATE: Added DocumentReference<Playlist> Type Assertion
+        const response = (await addDoc(
+          playlist
+        )) as DocumentReference<Playlist>;
+        // const response: DocumentReference<Playlist> = await addDoc(playlist); // ERROR
 
         // Toggle isPending to end (false)
         isPending.value = false;

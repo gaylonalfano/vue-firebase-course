@@ -1,25 +1,11 @@
-import { ref, watchEffect, Ref } from "vue";
+import { ref, watchEffect } from "vue";
 import { db } from "@/firebase/config";
 import {
   DocumentSnapshot,
-  DocumentData,
   FirestoreError,
   DocumentReference,
-  Timestamp,
 } from "@firebase/firestore-types";
-
-// Seeing if I can create an interface to address my Vetur/TS Errors
-interface Playlist {
-  id: string;
-  coverImagePath: string;
-  coverImageUrl: string;
-  createdAt: Timestamp;
-  description: string;
-  songs: string[];
-  title: string;
-  userId: string;
-  userName: string;
-}
+import Playlist from "@/interfaces/playlist";
 
 // Create a general purpose function to get passed collection
 // Q: I believe this should be async?
