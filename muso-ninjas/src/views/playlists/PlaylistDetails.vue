@@ -29,11 +29,25 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from "vue";
+import { defineComponent, computed, Ref } from "vue";
+import { Timestamp } from "@firebase/firestore-types";
 // import { auth } from "@/firebase/config";
 import getDocument from "@/composables/getDocument";
 import getUser from "@/composables/getUser";
 import useDocument from "@/composables/useDocument";
+
+// Seeing if I can create an interface to address my Vetur/TS Errors
+interface Playlist {
+  id: string;
+  coverImagePath: string;
+  coverImageUrl: string;
+  createdAt: Timestamp;
+  description: string;
+  songs: string[];
+  title: string;
+  userId: string;
+  userName: string;
+}
 
 export default defineComponent({
   name: "PlaylistDetails",
@@ -50,17 +64,22 @@ export default defineComponent({
     const { user } = getUser();
     // useDocument() composable to access deleteDoc()
     // FIXME Again, running into Vetur 2339 issues with playlist.value?.id
-    // @ts-ignore
-    const { deleteDoc } = useDocument("playlists", playlist.value?.id);
+    // UPDATE Works with Playlist type!
+    const { deleteDoc } = useDocument(
+      "playlists",
+      (playlist.value as Playlist)?.id
+    );
 
     // Create a computed() property to track owner since dependent on user data
     // NOTE Shaun called is 'ownership'
-    const isOwner = computed<boolean | null>(() => {
+    const isOwner = computed(() => {
       // Return true if three conditions are met:
       return (
         // FIXME Gotta figure out the TS/Vetur Error. Optional chaining doesn't work
-        // @ts-ignore
-        playlist.value && user.value && user.value.uid == playlist.value?.userId
+        // Works if I cast playlist.value as Playlist!
+        (playlist.value as Playlist) &&
+        user.value &&
+        user.value.uid == (playlist.value as Playlist)?.userId
       );
     });
 

@@ -1,11 +1,25 @@
-import { ref, watchEffect } from "vue";
+import { ref, watchEffect, Ref } from "vue";
 import { db } from "@/firebase/config";
 import {
   DocumentSnapshot,
   DocumentData,
   FirestoreError,
   DocumentReference,
+  Timestamp,
 } from "@firebase/firestore-types";
+
+// Seeing if I can create an interface to address my Vetur/TS Errors
+interface Playlist {
+  id: string;
+  coverImagePath: string;
+  coverImageUrl: string;
+  createdAt: Timestamp;
+  description: string;
+  songs: string[];
+  title: string;
+  userId: string;
+  userName: string;
+}
 
 // Create a general purpose function to get passed collection
 // Q: I believe this should be async?
@@ -13,16 +27,28 @@ function getDocument(collection: string, id: string) {
   // Create refs for document and error since they are unique to collection
   // Q: Better type for documents? If I use FS Types I get errors.
   // A: Use generic types 'object | null' and it works later when updating document.value
-  const document = ref<object | null>(null); // Works but later issues
+  // const document = ref<object | null>(null); // Works but later issues
   // Q: What about making more specific? With object I run into errors later on
   // when trying to confirm playlist.value.userId == user.value.uid
   // const document = ref<DocumentSnapshot<DocumentData> | null>(null); // document.value ERROR...
+  // Let's try to type my ref generically to Ref<T> per the docs
+  // const document = ref(null) as Ref<object | null>;  // works
+  // const document = ref(null) as Ref<DocumentSnapshot<DocumentData> | null>; // TS 2740
+  // const document = ref(null) as Ref<DocumentReference | null>; // nope
+  // const document = ref(null) as Ref<DocumentData | null>; // works
+  // const document = ref(null) as Ref<Playlist | null>; // works
+  const document = ref<Playlist | null>(null); // works (same as above)
   const error = ref<string | null>(null);
 
   // Create a ref for our document as well and sort
-  const documentRef: DocumentReference<DocumentData> = db
-    .collection(collection)
-    .doc(id);
+  // const documentRef: DocumentReference<DocumentData> = db
+  //   .collection(collection)
+  //   .doc(id);
+
+  // Trying with Playlist
+  const documentRef = db.collection(collection).doc(id) as DocumentReference<
+    Playlist
+  >;
 
   // Let's now use onSnapshot() to add real-time listener for QuerySnapshot events
   // NOTE onNext callback returns snapshot object that contains the doc
@@ -30,7 +56,7 @@ function getDocument(collection: string, id: string) {
   // use in other places in this function if needed.
   // UPDATE Storing this in const to unsubscribe from listener after a component un-mounts
   const unsubscribe = documentRef.onSnapshot(
-    (doc: DocumentSnapshot<DocumentData>) => {
+    (doc: DocumentSnapshot<Playlist>) => {
       console.log("snapshot"); // Keeping track of how many times the listener stacks up
       // Confirm that the 'doc' actually exists
       // NOTE: Shaun used if (doc.data())
@@ -38,8 +64,10 @@ function getDocument(collection: string, id: string) {
         console.log("PASSED:doc.exists");
         // We have a doc. Let's update our document.value Ref by spreading
         // ERROR: We meet again! hahah
-        // SOLVED: Had to change my document Ref types to ref<object|null>(null)
-        document.value = { ...doc.data(), id: doc.id };
+        document.value = {
+          ...(doc.data() as Playlist),
+          id: doc.id,
+        };
         console.log("UPDATED:document.value: ", document.value);
         // Reset the error.value in case there was one
         error.value = null;
