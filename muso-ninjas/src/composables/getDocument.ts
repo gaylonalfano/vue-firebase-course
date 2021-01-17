@@ -26,7 +26,7 @@ function getDocument(collection: string, id: string) {
   const document = ref<Playlist | null>(null); // works (same as above)
   const error = ref<string | null>(null);
 
-  // Create a ref for our document as well and sort
+  // Create a FS Ref for our document as well and sort
   // const documentRef: DocumentReference<DocumentData> = db
   //   .collection(collection)
   //   .doc(id);

@@ -9,19 +9,27 @@ function useDocument(collection: string, docId: string) {
   const error = ref<string | null>(null);
   const isPending = ref<boolean>(false);
 
+  // NOTE Create a FS document Ref since we can later expand this composable
+  // to add more functionality like editing the document
+  // NOTE Using 'let' in case we change the FS Ref inside a func later on
+  let documentRef = db.collection(collection).doc(docId);
+
   // Create async function that deletes the document using FS delete()
-  async function deleteDoc(collection: string, docId: string) {
+  // NOTE No need to define collection and docId parameters as it's redundant
+  async function deleteDoc() {
     // Reset error.value = null for every request
     error.value = null;
     isPending.value = true;
 
     // Try to delete using FB built-in delete() method
     try {
-      const response = await db
-        .collection(collection)
-        .doc(docId)
-        .delete();
+      const response = await documentRef.delete();
       console.log("DELETED:deleteDoc:response: ", response);
+
+      // Done processing so let's reset isPending
+      isPending.value = false;
+      // Let's return the response in case we want to use it later
+      return response;
     } catch (err) {
       error.value = err.message;
       isPending.value = false;

@@ -55,11 +55,8 @@ export default defineComponent({
     const { user } = getUser();
     // useDocument() composable to access deleteDoc()
     // FIXME Again, running into Vetur 2339 issues with playlist.value?.id
-    // UPDATE Works with Playlist type!
-    const { deleteDoc } = useDocument(
-      "playlists",
-      (playlist.value as Playlist)?.id
-    );
+    // UPDATE Works with Playlist type! Use props.id for docId argument
+    const { deleteDoc } = useDocument("playlists", props.id);
 
     // Create a computed() property to track owner since dependent on user data
     // NOTE Shaun called is 'ownership'
@@ -76,12 +73,10 @@ export default defineComponent({
 
     // TODO Add handleDeletePlaylist() handler logic
     // FIXME playlist.value.id Vetur error...
+    // NOTE Don't need to perform checks on whether the playlist exists
+    // or if the current user isOwner as we've already done that above.
     async function handleDeletePlaylist() {
-      if ((playlist.value as Playlist).id && isOwner.value) {
-        console.log(
-          "PASSED:handleDeletePlaylist:playlist.value.id && isOwner.value"
-        );
-      }
+      await deleteDoc();
     }
 
     return { playlist, error, user, isOwner, handleDeletePlaylist };
