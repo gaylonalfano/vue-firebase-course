@@ -37,7 +37,29 @@ function useDocument(collection: string, docId: string) {
     }
   }
 
-  return { error, isPending, deleteDoc };
+  // Create async function that UPDATES the document using FS update(updatesObj)
+  async function updateDoc(updatesObj: object) {
+    // Reset error.value = null for every request
+    error.value = null;
+    isPending.value = true;
+
+    // Try to delete using FB built-in update() method
+    // NOTE Only pass in object with props to update
+    try {
+      const response = await documentRef.update(updatesObj);
+      console.log("UPDATED:updateDoc:response: ", response);
+
+      // Done processing so let's reset isPending
+      isPending.value = false;
+      // Let's return the response in case we want to use it later
+      return response;
+    } catch (err) {
+      error.value = err.message;
+      isPending.value = false;
+      console.log("FAILED: Could not update the document.");
+    }
+  }
+  return { error, isPending, deleteDoc, updateDoc };
 }
 
 export default useDocument;

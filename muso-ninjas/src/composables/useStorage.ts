@@ -11,7 +11,7 @@ function useStorage() {
   // Ref for FB Storage path (e.g., covers/{userId}/{fileName})
   const filePath = ref<string | null>(null);
 
-  // Create a function that will upload an image
+  // ==== Create a function that will upload an image
   async function uploadImage(file: File) {
     // Q: What args will it have?
     // A: The coverImageFile ref from CreatePlaylist.vue
@@ -37,7 +37,22 @@ function useStorage() {
     }
   }
 
-  return { fileUrl, filePath, error, uploadImage };
+  // ==== Create a function to delete image file
+  async function deleteImage(path: string) {
+    // Create a storageRef so we can work with Storage
+    const storageRef = storage.ref(path);
+
+    try {
+      // Delete the object/file using storageRef.delete()
+      await storageRef.delete();
+      console.log("SUCCESS:useStorage:deleteImage");
+    } catch (err) {
+      error.value = err.message;
+      console.log(error.value);
+    }
+  }
+
+  return { fileUrl, filePath, error, uploadImage, deleteImage };
 }
 
 export default useStorage;

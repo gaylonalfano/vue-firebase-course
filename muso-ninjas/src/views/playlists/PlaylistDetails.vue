@@ -19,25 +19,24 @@
     <div class="playlist-songs">
       <h3>No. of songs: {{ playlist.songs.length }}</h3>
       <p>Song list goes here...</p>
-      <!-- <div v-for="song in playlist.songs" :key="song.name"></div> -->
-      <h2>user.displayName: {{ user.displayName }}</h2>
-      <div v-if="user.displayName === playlist.userName">
-        <h2>user.diplayName === playlist.userName</h2>
-      </div>
+      <AddSong v-if="isOwner" :playlist="playlist" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed, Ref } from "vue";
-// import { Timestamp } from "@firebase/firestore-types";
+import { useRouter } from "vue-router";
+import AddSong from "@/components/AddSong.vue";
 import getDocument from "@/composables/getDocument";
 import getUser from "@/composables/getUser";
 import useDocument from "@/composables/useDocument";
+import useStorage from "@/composables/useStorage";
 import Playlist from "@/interfaces/playlist";
 
 export default defineComponent({
   name: "PlaylistDetails",
+  components: { AddSong },
   props: ["id"],
   setup(props) {
     // Bring in getDocument composable
@@ -57,6 +56,10 @@ export default defineComponent({
     // FIXME Again, running into Vetur 2339 issues with playlist.value?.id
     // UPDATE Works with Playlist type! Use props.id for docId argument
     const { deleteDoc } = useDocument("playlists", props.id);
+    // Bring in deleteImage from useStorage composable
+    const { deleteImage } = useStorage();
+    // Bring in router so we can reroute to Home after deleting playlist
+    const router = useRouter();
 
     // Create a computed() property to track owner since dependent on user data
     // NOTE Shaun called is 'ownership'
@@ -76,7 +79,12 @@ export default defineComponent({
     // NOTE Don't need to perform checks on whether the playlist exists
     // or if the current user isOwner as we've already done that above.
     async function handleDeletePlaylist() {
+      // NOTE Let's delete the Image first so we still have access to coverImagePath
+      await deleteImage((playlist.value as Playlist)?.coverImagePath);
       await deleteDoc();
+
+      // Reroute user to home page
+      router.push({ name: "Home" });
     }
 
     return { playlist, error, user, isOwner, handleDeletePlaylist };
