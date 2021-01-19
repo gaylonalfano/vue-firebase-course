@@ -11,6 +11,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
+import { useRouter } from "vue-router";
 import useLogin from "@/composables/useLogin";
 
 export default defineComponent({
@@ -23,6 +24,9 @@ export default defineComponent({
     const email = ref<string>("");
     const password = ref<string>("");
 
+    // Get a router to redirect after successful login
+    const router = useRouter();
+
     async function handleLogin() {
       // Try to login with the user inputs
       const response = await login(email.value, password.value);
@@ -32,6 +36,8 @@ export default defineComponent({
           "SUCCESS:Login:handleLogin:response.user: ",
           response?.user
         );
+
+        router.push({ name: "UserPlaylists" });
       }
     }
 

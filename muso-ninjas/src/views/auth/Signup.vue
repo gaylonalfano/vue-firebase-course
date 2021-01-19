@@ -17,6 +17,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
+import { useRouter } from "vue-router";
 import useSignup from "@/composables/useSignup";
 
 export default defineComponent({
@@ -29,6 +30,9 @@ export default defineComponent({
     const displayName = ref<string>("");
     const email = ref<string>("");
     const password = ref<string>("");
+
+    // Get a router to redirect after successful signup
+    const router = useRouter();
 
     // Handle form submission by using signup composable
     async function handleSignup() {
@@ -43,6 +47,8 @@ export default defineComponent({
           "SUCCESS:Signup:handleSignup:response.user: ",
           response?.user
         );
+
+        router.push({ name: "UserPlaylists" });
       } // Else we display error in template
     }
 
