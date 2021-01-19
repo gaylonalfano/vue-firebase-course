@@ -1,18 +1,25 @@
 <template>
   <div class="user-playlists">
     <h2>My Playlists</h2>
-    {{ playlists }}
+    <div v-if="playlists">
+      <ListView :playlists="playlists" />
+    </div>
+    <router-link :to="{ name: 'CreatePlaylist' }" class="btn"
+      >Create a new Playlist</router-link
+    >
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 import { FieldPath, WhereFilterOp } from "@firebase/firestore-types";
+import ListView from "@/components/ListView.vue";
 import getUser from "@/composables/getUser";
 import getCollection from "@/composables/getCollection";
 
 export default defineComponent({
   name: "UserPlaylist",
+  components: { ListView },
   setup() {
     // Get current auth user
     const { user } = getUser();
