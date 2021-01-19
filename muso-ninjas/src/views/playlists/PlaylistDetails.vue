@@ -17,8 +17,19 @@
 
     <!-- song list on right side -->
     <div class="playlist-songs">
-      <h3>No. of songs: {{ playlist.songs.length }}</h3>
-      <p>Song list goes here...</p>
+      <div v-if="!playlist.songs.length">
+        No songs have been added to this playlist yet.
+      </div>
+      <div class="single-song" v-for="song in playlist.songs" :key="song.id">
+        <div class="song-details">
+          <h3>{{ song.title }}</h3>
+          <p>{{ song.artist }}</p>
+        </div>
+        <button v-if="isOwner" @click="handleDeleteSong(song.id)">
+          Delete
+        </button>
+      </div>
+
       <AddSong v-if="isOwner" :playlist="playlist" />
     </div>
   </div>
@@ -33,6 +44,7 @@ import getUser from "@/composables/getUser";
 import useDocument from "@/composables/useDocument";
 import useStorage from "@/composables/useStorage";
 import Playlist from "@/interfaces/playlist";
+import Song from "@/interfaces/song";
 
 export default defineComponent({
   name: "PlaylistDetails",
@@ -55,7 +67,7 @@ export default defineComponent({
     // useDocument() composable to access deleteDoc()
     // FIXME Again, running into Vetur 2339 issues with playlist.value?.id
     // UPDATE Works with Playlist type! Use props.id for docId argument
-    const { deleteDoc } = useDocument("playlists", props.id);
+    const { deleteDoc, updateDoc } = useDocument("playlists", props.id);
     // Bring in deleteImage from useStorage composable
     const { deleteImage } = useStorage();
     // Bring in router so we can reroute to Home after deleting playlist
@@ -87,7 +99,30 @@ export default defineComponent({
       router.push({ name: "Home" });
     }
 
-    return { playlist, error, user, isOwner, handleDeletePlaylist };
+    async function handleDeleteSong(songId: number) {
+      // Use the updateDoc(updatesObj) composable function
+      // Get existing list of playlist.songs and filter out songId
+      // NOTE Need to use Type Assertion 'as Song[]' otherwise Vetur Error
+      const updatedSongs = playlist.value?.songs.filter(
+        (song) => song.id != songId
+      ) as Song[];
+
+      // console.log(songId);
+      // console.log("playlist.value.songs: ", playlist.value?.songs);
+      // console.log("updatedSongs", updatedSongs);
+
+      // Have the new filtered Array. Time to update playlist in FS
+      await updateDoc({ songs: updatedSongs });
+    }
+
+    return {
+      playlist,
+      error,
+      user,
+      isOwner,
+      handleDeletePlaylist,
+      handleDeleteSong,
+    };
   },
 });
 </script>
@@ -130,5 +165,13 @@ export default defineComponent({
 }
 .description {
   text-align: left;
+}
+.single-song {
+  padding: 10px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px dashed var(--secondary);
+  margin-bottom: 20px;
 }
 </style>

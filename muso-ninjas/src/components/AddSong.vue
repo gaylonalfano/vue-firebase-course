@@ -15,6 +15,7 @@
 import { defineComponent, ref } from "vue";
 import useDocument from "@/composables/useDocument";
 import Playlist from "@/interfaces/playlist";
+import Song from "@/interfaces/song";
 
 export default defineComponent({
   name: "AddSong",
@@ -42,11 +43,6 @@ export default defineComponent({
         console.log("PASSED:AddSong:handleAddSong:title.value && artist.value");
         // Gather up our song details into an object
         // Q: Does newSong need to be reactive? Don't think so...
-        type Song = {
-          title: string;
-          artist: string;
-          id: number;
-        };
         const newSong: Song = {
           title: title.value,
           artist: artist.value,
@@ -64,8 +60,8 @@ export default defineComponent({
         });
 
         // Clear the form inputs
-        title.value = "";
         artist.value = "";
+        title.value = "";
       }
     }
 
