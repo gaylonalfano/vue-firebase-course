@@ -32,7 +32,7 @@ button,
   padding: 8px 12px;
   font-weight: 600;
   cursor: pointer;
-  display: inline;
+  display: inline-block;
 }
 button:hover,
 .btn:hover {
