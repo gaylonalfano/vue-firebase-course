@@ -21,3 +21,26 @@ modalDivEl.addEventListener("click", function (e) {
         modalDivEl.classList.remove("open");
     }
 });
+// Test out my Callable Cloud Function
+var sayHelloButton = document.querySelector(".callable");
+sayHelloButton.addEventListener("click", function () {
+    // Have it invoke my sayHello() callable
+    // Q: How to call the callable? It's not a Request type...
+    // A: First need a FB Function reference! We can access it from firebase!
+    // A: Typically best to store as same name we gave in functions/index.ts
+    // @ts-ignore
+    var sayHello = firebase.functions().httpsCallable("sayHello");
+    // Now that we have a REFERENCE, we can invoke it right here
+    // This is asynchronous, so it's going to return a Promise.
+    // Once we get the result/response back from sayHello(), we can access its
+    // data via response.data.
+    // Q: What Type can we use for the response?
+    // A: functions.Response (see my functions/src/index.ts)
+    // Q: How to pass data to our callable?
+    // A: Simply pass a data object as an argument!
+    // A: This now gives us this object to interact with inside our
+    // sayHello Cloud function!
+    sayHello({ name: "Gaylon" }).then(function (response) {
+        console.log(response.data);
+    });
+});
