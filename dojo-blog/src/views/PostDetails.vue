@@ -49,13 +49,16 @@ export default defineComponent({
     async function deletePost() {
       console.log("Delete Post");
       // Use await to perform the delete. Don't need to do anything with the returned object.
-      await projectFirestore.collection("posts").doc(props.id).delete(); // Or use route.params.id
+      await projectFirestore
+        .collection("posts")
+        .doc(props.id)
+        .delete(); // Or use route.params.id
       // Reroute back to named Home route using useRouter()
       router.push({ name: "Home" }); // Or ("/")
     }
 
     return { post, error, deletePost };
-  },
+  }
 });
 </script>
 
